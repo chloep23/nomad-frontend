@@ -21,13 +21,14 @@ struct LoginPage: View {
                 .frame(width: 370, height: 370)
                 .rotationEffect(.degrees(-35))
                 .offset(x: 175, y: -150)
-            Text("Login")
-                .offset(x: 38, y: -240)
+            
+            Text("Hi, there")
+                .offset(x: 41, y: -240)
                 .font(.system(size: 40))
                 .bold()
                 .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
-            Text("Please sign in to continue")
-                .offset(x: 38, y: -226)
+            Text("Login to explore more")
+                .offset(x: 41, y: -226)
                 .font(.system(size: 20))
                 .bold()
                 .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
@@ -47,15 +48,16 @@ struct LoginPage: View {
                             .font(.system(size: 18))
                 }
                 .padding(.bottom, 4)
+                .offset(x:2)
                 .overlay(
                     Rectangle()
                         .frame(width: 330, height: 1)
                         .foregroundColor(.gray.opacity(5))
                         .shadow(color: .gray.opacity(0.2), radius: 3, x: 0, y: 5)
-                        .offset(x: -36),
+                        .offset(x: -40),
                     alignment: .bottom
                 )
-                .offset(x: 38, y: -208)
+                .offset(x: 41, y: -208)
             }
             
             
@@ -64,22 +66,25 @@ struct LoginPage: View {
                     Image("lock")
                         .foregroundColor(.gray)
                     if password.isEmpty { //when user hasn't typed anything
-                            Text("Password")
-                            .foregroundColor(.black.opacity(0.45))                          }
+                        Text("Password")
+                            .foregroundColor(.black.opacity(0.45))
+                            .offset(x:3)
+                        }
 
                         TextField("", text: $password)
                         .foregroundColor(.black.opacity(0.45))
                             .font(.system(size: 18))
                 }
-                .padding(.bottom, 5)
+                .padding(.bottom, 4)
+                .offset(x:2)
                 .overlay(
                     Rectangle()
                         .frame(width: 330, height: 1)
                         .foregroundColor(.gray.opacity(5))
                         .shadow(color: .gray.opacity(0.5), radius: 3, x: 0, y: 5)
-                        .offset(x: -36),
+                        .offset(x: -40),
                     alignment: .bottom)
-                .offset(x: 38, y: -180)
+                .offset(x: 41, y: -180)
             }
             
         
@@ -97,18 +102,50 @@ struct LoginPage: View {
                 print("Placeholder")
             }) {
                 HStack{
-                    Text("Ready")
-                        .offset(x: -5)
-                    Image(systemName: "arrow.right")
+                    Text("Login")
                 }
                 .bold()
                 .font(.system(size: 18))
                 .foregroundColor(Color(red: 255/255, green: 248/255, blue: 228/255))
-                .frame(width: 118, height: 32)
+                .frame(width: 310, height: 32)
                 .background(Color(red: 4/255, green: 57/255, blue: 11/255))
                 .cornerRadius(30)
-                .offset(x: 248, y: -160)
+                .offset(x: 45, y: -160)
+                .shadow(color: .black.opacity(0.3), radius: 2, x: 3, y: 5)
             }
+            
+           
+            Text("Or")
+                .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
+                .bold()
+                .offset(x:190, y:-140)
+            
+            HStack{
+                ZStack {
+                    Circle()
+                        .fill(Color(red: 4/255, green: 57/255, blue: 11/255))
+                        .padding(-4)
+                        .frame(width: 50, height: 50)
+                    Image("google")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 25, height: 25)
+                }
+                .offset(x:140, y:-130)
+                ZStack {
+                    Circle()
+                        .fill(Color(red: 4/255, green: 57/255, blue: 11/255))
+                        .padding(-4)
+                        .frame(width: 50, height: 50)
+                    Image("apple")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 38, height: 38)
+                }
+                .offset(x:155, y:-130)
+            }
+            
+            
             
             HStack{
                 Text("Don't have an account?")
@@ -118,13 +155,16 @@ struct LoginPage: View {
                     .bold()
             }
             .font(.system(size: 21))
-            .offset(x: 50, y: 60)
+            .offset(x: 50, y:-10)
             
         }
+        .offset(y:40)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(red: 255/255, green: 248/255, blue: 228/255))
+        
 
     }
+        
         
 }
 

@@ -11,7 +11,7 @@ import SwiftUI
 struct nomad_frontendApp: App {
     var body: some Scene {
         WindowGroup {
-            LondonPage()
+            CreateAccountPage()
         }
     }
 }

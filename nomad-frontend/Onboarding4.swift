@@ -9,8 +9,7 @@ import SwiftUI
 
 struct Onboarding4: View {
     
-    @State private var email: String = ""
-    @State private var password: String = ""
+    @State private var location: String = ""
     
     var body: some View {
         
@@ -34,25 +33,30 @@ struct Onboarding4: View {
             
            
         
-            VStack{
-                Button(action: {
-                    print("Placeholder")
-                }) {
-                    Text("City, state")
-                        .bold()
-                        .offset(x:-85)
+            VStack {
+                ZStack(alignment: .leading) {
+                    // Placeholder Text
+                    if location.isEmpty {
+                        Text("City, state")
+                            .font(.system(size: 15))
+                            .foregroundColor(.black.opacity(0.45))
+                            .offset(x: 18)
+                    }
+
+                    // Editable TextField
+                    TextField("", text: $location)
+                        .padding(.horizontal, 15)
+                        .foregroundColor(.black)
                         .font(.system(size: 15))
                         .frame(width: 300, height: 37)
                         .background(Color.clear)
-                        .foregroundColor(.black.opacity(0.35))
                         .overlay(
                             RoundedRectangle(cornerRadius: 30)
                                 .stroke(.black.opacity(0.45))
                                 .shadow(color: .black.opacity(0.8), radius: 2, x: -2, y: 4)
                         )
-                        .offset(x: -20, y: -65)
-                        
                 }
+                .offset(x: -20, y: -65)
             }
             
             Button(action: {

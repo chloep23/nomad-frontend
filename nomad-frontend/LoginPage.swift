@@ -9,7 +9,7 @@ import SwiftUI
 
 struct LoginPage: View {
     
-    @State private var email: String = ""
+    @State private var username: String = ""
     @State private var password: String = ""
     
     var body: some View {
@@ -34,56 +34,61 @@ struct LoginPage: View {
                 .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
            
             
-            VStack(alignment: .leading, spacing: 0){
+            // Username TextField
+            VStack(alignment: .leading, spacing: 0) {
                 HStack {
                     Image("user")
                         .foregroundColor(.gray)
-                    if email.isEmpty { //when user hasn't typed anything
+
+                    ZStack(alignment: .leading) {
+                        if username.isEmpty {
                             Text("Username")
                                 .foregroundColor(.black.opacity(0.45))
                         }
 
-                        TextField("", text: $email)
+                        TextField("", text: $username)
                             .foregroundColor(.gray.opacity(1))
                             .font(.system(size: 18))
+                    }
                 }
                 .padding(.bottom, 4)
-                .offset(x:2)
                 .overlay(
                     Rectangle()
                         .frame(width: 330, height: 1)
-                        .foregroundColor(.gray.opacity(5))
-                        .shadow(color: .gray.opacity(0.2), radius: 3, x: 0, y: 5)
+                        .foregroundColor(.gray.opacity(0.5))
+                        .shadow(color: .black.opacity(0.5), radius: 3, x: 1, y: 4)
                         .offset(x: -40),
                     alignment: .bottom
                 )
                 .offset(x: 41, y: -208)
             }
-            
-            
-            VStack(alignment: .leading, spacing: 0){
+
+            // Password SecureField
+            VStack(alignment: .leading, spacing: 0) {
                 HStack {
                     Image("lock")
                         .foregroundColor(.gray)
-                    if password.isEmpty { //when user hasn't typed anything
-                        Text("Password")
-                            .foregroundColor(.black.opacity(0.45))
-                            .offset(x:3)
+
+                    ZStack(alignment: .leading) {
+                        if password.isEmpty {
+                            Text("Password")
+                                .foregroundColor(.black.opacity(0.45))
                         }
 
-                        TextField("", text: $password)
-                        .foregroundColor(.black.opacity(0.45))
+                        SecureField("", text: $password)
+                            .foregroundColor(.black.opacity(1))
                             .font(.system(size: 18))
+                    }
                 }
                 .padding(.bottom, 4)
-                .offset(x:2)
                 .overlay(
                     Rectangle()
                         .frame(width: 330, height: 1)
-                        .foregroundColor(.gray.opacity(5))
-                        .shadow(color: .gray.opacity(0.5), radius: 3, x: 0, y: 5)
+                        .foregroundColor(.gray.opacity(0.5))
+                        .shadow(color: .black.opacity(0.5), radius: 3, x: 1, y: 4)
                         .offset(x: -40),
-                    alignment: .bottom)
+                    alignment: .bottom
+                )
                 .offset(x: 41, y: -180)
             }
             
@@ -111,7 +116,7 @@ struct LoginPage: View {
                 .background(Color(red: 4/255, green: 57/255, blue: 11/255))
                 .cornerRadius(30)
                 .offset(x: 45, y: -160)
-                .shadow(color: .black.opacity(0.3), radius: 2, x: 3, y: 5)
+                .shadow(color: .black.opacity(0.2), radius: 2, x: 3, y: 5)
             }
             
            

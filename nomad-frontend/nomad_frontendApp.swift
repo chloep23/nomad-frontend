@@ -7,11 +7,17 @@
 
 import SwiftUI
 
+struct ContentView: View {
+    var body: some View {
+        Onboarding1()
+    }
+}
+
 @main
-struct nomad_frontendApp: App {
+struct MyApp: App {
     var body: some Scene {
         WindowGroup {
-            CreateAccountPage()
+            ContentView()
         }
     }
 }

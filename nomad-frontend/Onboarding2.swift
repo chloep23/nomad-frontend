@@ -15,7 +15,7 @@ struct Onboarding2: View {
 
     
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack {
             VStack(alignment: .leading) {
                 
                 Image("traveling")
@@ -61,7 +61,7 @@ struct Onboarding2: View {
                     .offset(x: -20, y: -65)
                 }
                 
-                NavigationLink(value: OnboardingStep.step3) {
+                NavigationLink(destination: Onboarding3()) {
                     HStack {
                         Text("Next")
                             .offset(x: -9)
@@ -76,9 +76,9 @@ struct Onboarding2: View {
                     .frame(width: 108, height: 32)
                     .background(Color(red: 4/255, green: 57/255, blue: 11/255))
                     .cornerRadius(30)
-                    .offset(x: 180, y: -20)
                     .shadow(color: .black.opacity(0.3), radius: 2, x: 3, y: 5)
                 }
+                .offset(x: 180, y: -20)
                 
                 Image("5dots2")
                     .resizable()

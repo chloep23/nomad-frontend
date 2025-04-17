@@ -12,8 +12,9 @@ struct Onboarding1: View {
     @State private var name: String = ""
     @State private var path = NavigationPath()
     
+
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack {
             VStack(alignment: .leading) {
                 
                 // Header
@@ -43,7 +44,7 @@ struct Onboarding1: View {
                                 .foregroundColor(.black.opacity(0.45))
                                 .offset(x: 18)
                         }
-
+                        
                         TextField("", text: $name)
                             .padding(.horizontal, 15)
                             .foregroundColor(.black)
@@ -59,9 +60,7 @@ struct Onboarding1: View {
                     .offset(x: -20, y: -65)
                 }
                 
-                Button(action: {
-                    path.append(OnboardingStep.step2)
-                }) {
+                NavigationLink(destination: Onboarding2()) {
                     HStack {
                         Text("Next")
                             .offset(x: -9)
@@ -76,9 +75,9 @@ struct Onboarding1: View {
                     .frame(width: 108, height: 32)
                     .background(Color(red: 4/255, green: 57/255, blue: 11/255))
                     .cornerRadius(30)
-                    .offset(x: 180, y: -20)
                     .shadow(color: .black.opacity(0.3), radius: 2, x: 3, y: 5)
                 }
+                .offset(x: 180, y: -20)
                 
                 Image("5dots1")
                     .resizable()
@@ -88,19 +87,7 @@ struct Onboarding1: View {
             .offset(x: 22, y: 40)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(red: 255/255, green: 248/255, blue: 228/255))
-            
-            .navigationDestination(for: OnboardingStep.self) { step in
-                switch step {
-                case .step2:
-                    Onboarding2()
-                case .step3:
-                    Onboarding3()
-                case .step4:
-                    Onboarding4()
-                case .step5:
-                    Onboarding5()
-                }
-            }
+
         }
     }
 }

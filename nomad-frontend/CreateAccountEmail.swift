@@ -15,16 +15,21 @@ struct CreateAccountEmail: View {
     @State private var cpassword: String = ""
     @State private var message: String = ""
 
+    @Environment(\.dismiss) var dismiss  // Add this at the top of the struct
     
     var body: some View {
         
         VStack(alignment: .leading) {
             HStack{
-                Image(systemName: "arrow.left")
-                    .resizable()
-                    .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
-                    .frame(width: 30, height: 23)
-                    .offset(x:24, y:-290)
+                Button(action: {
+                        dismiss()  // This makes it behave like a back button
+                    }) {
+                        Image(systemName: "arrow.left")
+                            .resizable()
+                            .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
+                            .frame(width: 30, height: 23)
+                            .offset(x: 24, y: -290)
+                    }
                     
                 Image("compass")
                     .resizable()

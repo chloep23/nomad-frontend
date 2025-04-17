@@ -8,14 +8,13 @@
 import SwiftUI
 
 struct LoginPage: View {
-    
-    @State private var username: String = ""
+    @EnvironmentObject var authViewModel: AuthViewModel
+    @State private var email: String = ""
     @State private var password: String = ""
+    @State private var navigateToCreateAccount = false
     
     var body: some View {
-        
-        NavigationStack {
-            
+        NavigationView {
             VStack(alignment: .leading) {
                 Image("compass")
                     .resizable()
@@ -34,67 +33,62 @@ struct LoginPage: View {
                     .font(.system(size: 20))
                     .bold()
                     .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
+               
                 
-                
-                // Username TextField
-                VStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: 0){
                     HStack {
                         Image("user")
                             .foregroundColor(.gray)
-                        
-                        ZStack(alignment: .leading) {
-                            if username.isEmpty {
+                        if email.isEmpty { //when user hasn't typed anything
                                 Text("Username")
                                     .foregroundColor(.black.opacity(0.45))
                             }
-                            
-                            TextField("", text: $username)
+
+                            TextField("", text: $email)
                                 .foregroundColor(.gray.opacity(1))
                                 .font(.system(size: 18))
-                        }
                     }
                     .padding(.bottom, 4)
+                    .offset(x:2)
                     .overlay(
                         Rectangle()
                             .frame(width: 330, height: 1)
-                            .foregroundColor(.gray.opacity(0.5))
-                            .shadow(color: .black.opacity(0.5), radius: 3, x: 1, y: 4)
+                            .foregroundColor(.gray.opacity(5))
+                            .shadow(color: .gray.opacity(0.2), radius: 3, x: 0, y: 5)
                             .offset(x: -40),
                         alignment: .bottom
                     )
                     .offset(x: 41, y: -208)
                 }
                 
-                // Password SecureField
-                VStack(alignment: .leading, spacing: 0) {
+                
+                VStack(alignment: .leading, spacing: 0){
                     HStack {
                         Image("lock")
                             .foregroundColor(.gray)
-                        
-                        ZStack(alignment: .leading) {
-                            if password.isEmpty {
-                                Text("Password")
-                                    .foregroundColor(.black.opacity(0.45))
+                        if password.isEmpty { //when user hasn't typed anything
+                            Text("Password")
+                                .foregroundColor(.black.opacity(0.45))
+                                .offset(x:3)
                             }
-                            
-                            SecureField("", text: $password)
-                                .foregroundColor(.black.opacity(1))
+
+                            TextField("", text: $password)
+                            .foregroundColor(.black.opacity(0.45))
                                 .font(.system(size: 18))
-                        }
                     }
                     .padding(.bottom, 4)
+                    .offset(x:2)
                     .overlay(
                         Rectangle()
                             .frame(width: 330, height: 1)
-                            .foregroundColor(.gray.opacity(0.5))
-                            .shadow(color: .black.opacity(0.5), radius: 3, x: 1, y: 4)
+                            .foregroundColor(.gray.opacity(5))
+                            .shadow(color: .gray.opacity(0.5), radius: 3, x: 0, y: 5)
                             .offset(x: -40),
-                        alignment: .bottom
-                    )
+                        alignment: .bottom)
                     .offset(x: 41, y: -180)
                 }
                 
-                
+            
                 HStack {
                     Text("Forgot?")
                         .offset(x: 325, y: -178)
@@ -106,21 +100,31 @@ struct LoginPage: View {
                 }
                 
                 Button(action: {
-                    print("Placeholder")
+                    authViewModel.login(email: email, password: password)
                 }) {
-                    HStack{
+                    if authViewModel.isLoading {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                    } else {
                         Text("Login")
+                            .bold()
+                            .font(.system(size: 18))
+                            .foregroundColor(Color(red: 255/255, green: 248/255, blue: 228/255))
                     }
-                    .bold()
-                    .font(.system(size: 18))
-                    .foregroundColor(Color(red: 255/255, green: 248/255, blue: 228/255))
-                    .frame(width: 310, height: 32)
-                    .background(Color(red: 4/255, green: 57/255, blue: 11/255))
-                    .cornerRadius(30)
-                    .offset(x: 45, y: -160)
-                    .shadow(color: .black.opacity(0.2), radius: 2, x: 3, y: 5)
                 }
+                .frame(width: 310, height: 32)
+                .background(Color(red: 4/255, green: 57/255, blue: 11/255))
+                .cornerRadius(30)
+                .offset(x: 45, y: -160)
+                .shadow(color: .black.opacity(0.3), radius: 2, x: 3, y: 5)
+                .disabled(authViewModel.isLoading)
                 
+                if let errorMessage = authViewModel.errorMessage {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .font(.caption)
+                        .offset(x: 45, y: -150)
+                }
                 
                 Text("Or")
                     .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
@@ -158,23 +162,23 @@ struct LoginPage: View {
                     Text("Don't have an account?")
                         .foregroundColor(.black.opacity(0.45))
                     
-                    NavigationLink(destination: CreateAccountPage()) {
+                    NavigationLink(destination: CreateAccountPage().environmentObject(authViewModel), isActive: $navigateToCreateAccount) {
                         Text("Sign up")
-                        .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
-                        .bold()
+                            .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
+                            .bold()
+                            .onTapGesture {
+                                navigateToCreateAccount = true
+                            }
                     }
                 }
                 .font(.system(size: 21))
                 .offset(x: 50, y:-10)
-                
             }
             .offset(y:40)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(red: 255/255, green: 248/255, blue: 228/255))
-            
-            
         }
-        
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

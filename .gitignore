@@ -32,4 +32,5 @@ fastlane/screenshots/**/*.png
 # Other
 .DS_Store
 
-
+# AWS API Gateway
+nomad-frontend/nomad-frontend/Configs/APIConfig.swift

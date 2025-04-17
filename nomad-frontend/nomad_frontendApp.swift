@@ -14,10 +14,21 @@ struct ContentView: View {
 }
 
 @main
-struct MyApp: App {
+struct nomad_frontendApp: App {
+    @StateObject var authViewModel = AuthViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if authViewModel.isAuthenticated {
+                // This would be your main app after login
+                // For now, let's start with the onboarding process
+                Onboarding1()
+                    .environmentObject(authViewModel)
+            } else {
+                // Show login or create account
+                LoginPage()
+                    .environmentObject(authViewModel)
+            }
         }
     }
 }

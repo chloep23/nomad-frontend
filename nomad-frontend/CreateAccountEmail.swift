@@ -10,12 +10,12 @@ import Foundation
 
 struct CreateAccountEmail: View {
     
+    @EnvironmentObject var authViewModel: AuthViewModel
     @State private var email: String = ""
     @State private var password: String = ""
-    @State private var cpassword: String = ""
-    @State private var message: String = ""
-
-    @Environment(\.dismiss) var dismiss  // Add this at the top of the struct
+    @State private var confirmPassword: String = ""
+    @State private var localError: String?
+    @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
         
@@ -146,40 +146,47 @@ struct CreateAccountEmail: View {
                     alignment: .bottom
                 )
                 .offset(x: 31, y: -204)
-                //.padding(.horizontal, 30)
             }
-
             
+            // Add validation and error display
+            if let error = localError ?? authViewModel.errorMessage {
+                Text(error)
+                    .foregroundColor(.red)
+                    .font(.caption)
+                    .offset(x: 31, y: -220)
+            }
+            
+            // Update the Ready button
             Button(action: {
-                print("Ready button clicked!")
-                registerUser(email: email, password: password)
-                print(message)
-            }) {
-                HStack{
-                    Text("Ready")
-                        .bold()
-                        .font(.system(size: 18))
-                        .offset(x:-4)
-
-                    Image(systemName: "arrow.right")
-                        .resizable()
-                        .frame(width: 17, height: 13)
+                if password != confirmPassword {
+                    localError = "Passwords do not match"
+                    return
                 }
-                .foregroundColor(Color(red: 255/255, green: 248/255, blue: 228/255))
-                .frame(width: 115, height: 32)  // Expands the tappable area
-                .background(Color(red: 4/255, green: 57/255, blue: 11/255))
-                .cornerRadius(30)
-                .contentShape(Rectangle())
-                
-                
+                localError = nil
+                authViewModel.register(email: email, password: password)
+            }) {
+                if authViewModel.isLoading {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                } else {
+                    HStack{
+                        Text("Ready")
+                            .offset(x:-7)
+                        Image(systemName: "arrow.right")
+                            .resizable()
+                            .frame(width: 17, height:13)
+                    }
+                    .bold()
+                    .font(.system(size: 18))
+                    .foregroundColor(Color(red: 255/255, green: 248/255, blue: 228/255))
+                }
             }
+            .frame(width: 115, height: 32)
+            .background(Color(red: 4/255, green: 57/255, blue: 11/255))
+            .cornerRadius(30)
             .offset(x: 215, y: -180)
-            
-            // Message Display
-            Text(message)
-                .foregroundColor(.red)
-                .offset(x: 32, y: -150)
-            
+            .shadow(color: .black.opacity(0.3), radius: 2, x: 3, y: 5)
+            .disabled(authViewModel.isLoading)
         }
         .offset(x:20, y:40)
         .frame(maxWidth: .infinity, maxHeight: .infinity)

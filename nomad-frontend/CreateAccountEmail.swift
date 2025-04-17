@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct CreateAccountEmail: View {
     
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var cpassword: String = ""
+    @State private var message: String = ""
+
     
     var body: some View {
         
@@ -143,36 +146,88 @@ struct CreateAccountEmail: View {
 
             
             Button(action: {
-                print("Placeholder")
+                print("Ready button clicked!")
+                registerUser(email: email, password: password)
+                print(message)
             }) {
                 HStack{
                     Text("Ready")
-                        .offset(x:-7)
+                        .bold()
+                        .font(.system(size: 18))
+                        .offset(x:-4)
+
                     Image(systemName: "arrow.right")
                         .resizable()
-                        .frame(width: 17, height:13)
+                        .frame(width: 17, height: 13)
                 }
-                .bold()
-                .font(.system(size: 18))
                 .foregroundColor(Color(red: 255/255, green: 248/255, blue: 228/255))
-                .frame(width: 115, height: 32)
+                .frame(width: 115, height: 32)  // Expands the tappable area
                 .background(Color(red: 4/255, green: 57/255, blue: 11/255))
                 .cornerRadius(30)
-                .offset(x: 215, y: -180)
-                .shadow(color: .black.opacity(0.3), radius: 2, x: 3, y: 5)
+                .contentShape(Rectangle())
+                
+                
             }
+            .offset(x: 215, y: -180)
+            
+            // Message Display
+            Text(message)
+                .foregroundColor(.red)
+                .offset(x: 32, y: -150)
             
         }
         .offset(x:20, y:40)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(red: 255/255, green: 248/255, blue: 228/255))
-        
-
     }
+
+    func registerUser(email: String, password: String) {
         
+        guard let url = URL(string: "https://zj38dblmvj.execute-api.us-east-1.amazonaws.com/prod/register")
         
+        else {
+            self.message = "Invalid URL"
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let body: [String: String] = ["email": email, "password": password]
+
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: body, options: [])
+        } catch {
+            self.message = "Failed to encode request"
+            return
+        }
+
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    self.message = "Error: \(error.localizedDescription)"
+                    return
+                }
+
+                guard let data = data else {
+                    self.message = "No response data"
+                    return
+                }
+
+                if let jsonResponse = try? JSONSerialization.jsonObject(with: data, options: []) {
+                    self.message = "Response: \(jsonResponse)"
+                } else {
+                    self.message = "Invalid response format"
+                }
+            }
+        }
+
+        task.resume()
+    }
 }
 
+        
 #Preview {
     CreateAccountEmail()
 }

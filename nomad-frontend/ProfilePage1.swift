@@ -6,15 +6,21 @@
 import SwiftUI
 
 struct ProfilePage1: View {
+    // Dynamic variables
+    @State private var name: String = "Anniee Fang"
+    @State private var username: String = "@ahf1216"
+    @State private var searchText: String = ""
+    @State private var location: String = "Houston, TX"
+    
     let experiences: [Experience] = [
         Experience(number: 1, name: "Seoul", category: "South Korea } 7035 mi", rating: 10),
         Experience(number: 2, name: "San Diego", category: "California | 1460 mi", rating: 9.9),
         Experience(number: 3, name: "Sydney", category: "Australia | 8581 mi", rating:9.3),
     ]
     
-    let gridImages = ["londonbg", "praguebg", "seoulbg"]
-    let gridCities = ["London", "Prague", "Seoul"]
-    let gridActs = ["9 activities", "10 activities", "4 activities"]
+    let gridImages = ["londonbg", "praguebg", "seoulbg", "londonbg", "praguebg", "seoulbg", "londonbg", "praguebg", "seoulbg"]
+    let gridCities = ["London", "Prague", "Seoul", "London", "Prague", "Seoul", "London", "Prague", "Seoul"]
+    let gridActs = ["9 activities", "10 activities", "4 activities", "9 activities", "10 activities", "4 activities", "9 activities", "10 activities", "4 activities"]
     let columns = [
             GridItem(.flexible(), spacing: 10),
             GridItem(.flexible(), spacing: 10),
@@ -27,19 +33,19 @@ struct ProfilePage1: View {
                     Image(systemName: "square.and.arrow.up")
                         .font(.title2)
                         .foregroundColor(.black)
-                        .padding()
                     Image(systemName: "line.3.horizontal")
                         .resizable()
                         .foregroundColor(.black)
                         .frame(width: 17, height: 17)
                         .padding(.top, 3)
+                        .offset(x:10)
                 }
                 .offset(x: 130, y: 0)
-                Text("Anniee Fang")
+                Text(name)
                     .font(.system(size: 25))
                     .bold()
                     .foregroundColor(.black)
-                Text("@ahf1216")
+                Text(username)
                     .font(.system(size:17))
                     .fontWeight(.bold)
                     .foregroundColor(.black)
@@ -47,7 +53,7 @@ struct ProfilePage1: View {
                     .resizable()
                     .clipShape(Circle())
                     .frame(width: 130, height: 160)
-                Text("Houston, TX")
+                Text(location)
                     .font(.system(size:17))
                     .foregroundColor(.gray)
                     .padding(.bottom, 10)
@@ -86,30 +92,32 @@ struct ProfilePage1: View {
                     .foregroundColor(.gray)
             }
             .padding(.bottom, 10)
-            LazyVGrid(columns: columns, spacing: 6) {
-                ForEach(gridImages, id: \.self) { imageName in
-                    ZStack(alignment: .bottom){
-                        Image(imageName)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 110, height: 105)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                        Text("London")
-                            .font(.system(size:17))
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                            .offset(x: -14, y:-75)
-                        Text("9 activities")
-                            .font(.system(size:10))
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                            .offset(x: 14, y:-8)
+            ScrollView(.vertical, showsIndicators: false) {
+                LazyVGrid(columns: columns, spacing: 10) {
+                    ForEach(gridImages.indices, id: \.self) { index in
+                        ZStack(alignment: .bottom) {
+                            Image(gridImages[index])
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 110, height: 105)
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                            
+                            Text(gridCities[index]) // Dynamic city name
+                                .font(.system(size: 17))
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                                .offset(x: -14, y: -75)
+                            
+                            Text(gridActs[index]) // Dynamic activity text
+                                .font(.system(size: 10))
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                                .offset(x: 14, y: -8)
+                        }
                     }
-                    
                 }
+                .padding(.horizontal)
             }
-            .padding(.horizontal)
-            .frame(maxHeight: 320, alignment: .top)
         }
         
         // Bottom Navigation Bar

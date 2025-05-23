@@ -14,7 +14,7 @@ struct LoginPage: View {
     @State private var navigateToCreateAccount = false
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(alignment: .leading) {
                 Image("compass")
                     .resizable()
@@ -158,17 +158,16 @@ struct LoginPage: View {
                 
                 
                 
-                HStack{
+                HStack {
                     Text("Don't have an account?")
                         .foregroundColor(.black.opacity(0.45))
                     
-                    NavigationLink(destination: CreateAccountPage().environmentObject(authViewModel), isActive: $navigateToCreateAccount) {
+                    NavigationLink {
+                        CreateAccountPage().environmentObject(authViewModel)
+                    } label: {
                         Text("Sign up")
                             .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
                             .bold()
-                            .onTapGesture {
-                                navigateToCreateAccount = true
-                            }
                     }
                 }
                 .font(.system(size: 21))
@@ -178,7 +177,6 @@ struct LoginPage: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(red: 255/255, green: 248/255, blue: 228/255))
         }
-        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

@@ -40,18 +40,28 @@ struct LondonPage: View {
                 .offset(y:-50)
 
                 HStack {
-                    Image(systemName: "arrow.left")
-                        .resizable()
-                        .foregroundColor(.white)
-                        .frame(width: 25, height: 20)
-                        .padding(.leading, 25)
+                    Button(action: {
+                        NotificationCenter.default.post(name: .dismissLondonPage, object: nil)
+                    }) {
+                        Image(systemName: "arrow.left")
+                            .resizable()
+                            .foregroundColor(.white)
+                            .frame(width: 25, height: 20)
+                    }
+                    .padding(.leading, 25)
+                    
                     Spacer()
-                    Image(systemName: "square.and.arrow.up")
-                        .font(.title2)
-                        .foregroundColor(.white)
-                        .padding()
+                    
+                    Button(action: {
+                        print("Share button tapped")
+                    }) {
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.title2)
+                            .foregroundColor(.white)
+                    }
+                    .padding(.trailing, 25)
                 }
-                .offset(x:-6, y: -150)
+                .offset(y: -150)
             }
             
             List(experiences) { experience in
@@ -89,53 +99,9 @@ struct LondonPage: View {
                 .padding(.vertical, 17)
             }
             .listStyle(PlainListStyle())
-
         }
-        
-        // Bottom Navigation Bar
-        VStack {
-            Divider()
-            HStack {
-                Spacer()
-                VStack {
-                    Image("navhome")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 45, height: 45)
-                }
-                Spacer()
-                VStack {
-                    Image("navfeed")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 45, height: 45)
-                }
-                Spacer()
-                VStack {
-                    Image("navlog")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 45, height: 45)
-                }
-                Spacer()
-                VStack {
-                    Image("navsaved")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 45, height: 45)
-                }
-                Spacer()
-                VStack {
-                    Image("navprofile")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 45, height: 45)
-                }
-                Spacer()
-            }
-            .padding(.vertical, 2)
-            .offset(y:6)
-        }
+        .background(Color.white)
+        .navigationBarHidden(true)
     }
 }
 

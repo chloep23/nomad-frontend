@@ -96,7 +96,6 @@ struct FeedPage: View {
             }
             .offset(x:-130)
             
-            
             List(users) { user in
                 HStack (spacing: 20){
                     Image(user.pic)
@@ -149,53 +148,8 @@ struct FeedPage: View {
                     .listRowSeparator(.hidden)
             }
             .listStyle(PlainListStyle())
-
         }
-        
-        // Bottom Navigation Bar
-        VStack {
-            Divider()
-            HStack {
-                Spacer()
-                VStack {
-                    Image("navhome")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 45, height: 45)
-                }
-                Spacer()
-                VStack {
-                    Image("navfeed")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 45, height: 45)
-                }
-                Spacer()
-                VStack {
-                    Image("navlog")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 45, height: 45)
-                }
-                Spacer()
-                VStack {
-                    Image("navsaved")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 45, height: 45)
-                }
-                Spacer()
-                VStack {
-                    Image("navprofile")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 45, height: 45)
-                }
-                Spacer()
-            }
-            .padding(.vertical, 2)
-            .offset(y:6)
-        }
+        .navigationBarBackButtonHidden(true)
     }
 }
 

@@ -47,6 +47,69 @@ class APIService {
         }
     }
     
+    // MARK: - Profile Methods
+    
+    func getUserProfile() async throws -> UserProfile {
+        let endpoint = "\(baseURL)/profile"
+        let data = try await sendRequest(to: endpoint, method: "GET")
+        
+        do {
+            let decoder = JSONDecoder()
+            return try decoder.decode(UserProfile.self, from: data)
+        } catch {
+            throw APIError.decodingError(error)
+        }
+    }
+    
+    func updateUserProfile(_ request: ProfileUpdateRequest) async throws {
+        let endpoint = "\(baseURL)/profile"
+        
+        let body: [String: Any] = [
+            "name": request.name,
+            "username": request.username,
+            "location": request.location,
+            "profilePicture": request.profilePicture
+        ].compactMapValues { $0 }
+        
+        _ = try await sendRequest(to: endpoint, method: "PUT", body: body)
+    }
+    
+    func getUserTravelEntries() async throws -> [TravelEntry] {
+        let endpoint = "\(baseURL)/travel-entries"
+        let data = try await sendRequest(to: endpoint, method: "GET")
+        
+        do {
+            let decoder = JSONDecoder()
+            return try decoder.decode([TravelEntry].self, from: data)
+        } catch {
+            throw APIError.decodingError(error)
+        }
+    }
+    
+    // MARK: - Onboarding Methods
+    
+    func completeOnboarding(_ request: OnboardingRequest) async throws -> OnboardingResponse {
+        let endpoint = "\(baseURL)/onboard"
+        
+        let body: [String: Any] = [
+            "userId": request.userId,
+            "name": request.name,
+            "username": request.username,
+            "dateOfBirth": request.dateOfBirth,
+            "homeCity": request.homeCity,
+            "activities": request.activities
+        ]
+        
+        let data = try await sendRequest(to: endpoint, method: "POST", body: body)
+        
+        do {
+            let decoder = JSONDecoder()
+            return try decoder.decode(OnboardingResponse.self, from: data)
+        } catch {
+            throw APIError.decodingError(error)
+        }
+    }
+    
     // MARK: - Helper Methods
     
     private func sendRequest(to endpoint: String, method: String, body: [String: Any]? = nil) async throws -> Data {

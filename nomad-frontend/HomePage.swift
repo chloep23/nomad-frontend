@@ -167,51 +167,9 @@ struct HomePage: View {
                 .padding(.horizontal)
             }
         }
-        
-        // Bottom Navigation Bar
-        VStack {
-            Divider()
-            HStack {
-                Spacer()
-                Button(action: { print("Home tapped") }) {
-                    Image("navhome")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 45, height: 45)
-                }
-                Spacer()
-                Button(action: { print("Feed tapped") }) {
-                    Image("navfeed")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 45, height: 45)
-                }
-                Spacer()
-                Button(action: { print("Log tapped") }) {
-                    Image("navlog")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 45, height: 45)
-                }
-                Spacer()
-                Button(action: { print("Saved tapped") }) {
-                    Image("navsaved")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 45, height: 45)
-                }
-                Spacer()
-                Button(action: { print("Profile tapped") }) {
-                    Image("navprofile")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 45, height: 45)
-                }
-                Spacer()
-            }
-            .padding(.vertical, 2)
-            .offset(y:6)
-        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(red: 255/255, green: 248/255, blue: 228/255))
+        .navigationBarBackButtonHidden(true)
     }
 }
 

@@ -9,6 +9,8 @@ import SwiftUI
 
 struct CreateAccountPage: View {
     
+    @EnvironmentObject var appStateManager: AppStateManager
+    @StateObject private var authViewModel = AuthViewModel()
     @State private var email: String = ""
     @State private var password: String = ""
     
@@ -93,7 +95,7 @@ struct CreateAccountPage: View {
                         .bold()
                         .offset(x:35, y:-200)
                     
-                    NavigationLink(destination: CreateAccountEmail()) {
+                    NavigationLink(destination: CreateAccountEmail().environmentObject(authViewModel).environmentObject(appStateManager)) {
                         Text("I'll use email instead")
                             .bold()
                             .font(.system(size: 15))

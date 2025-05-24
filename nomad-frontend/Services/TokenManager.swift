@@ -6,6 +6,7 @@ class TokenManager {
     
     private let tokenKey = "com.nomad.auth.token"
     private let userIdKey = "com.nomad.auth.userId"
+    private let onboardingKey = "com.nomad.auth.onboardingComplete"
     
     private init() {}
     
@@ -73,5 +74,22 @@ class TokenManager {
     // Clear userId
     func clearUserId() {
         UserDefaults.standard.removeObject(forKey: userIdKey)
+    }
+    
+    // MARK: - Onboarding Status Management
+    
+    // Save onboarding completion status
+    func saveOnboardingComplete(_ isComplete: Bool) {
+        UserDefaults.standard.set(isComplete, forKey: onboardingKey)
+    }
+    
+    // Get onboarding completion status
+    func isOnboardingComplete() -> Bool {
+        return UserDefaults.standard.bool(forKey: onboardingKey)
+    }
+    
+    // Clear onboarding status (useful for logout or reset)
+    func clearOnboardingStatus() {
+        UserDefaults.standard.removeObject(forKey: onboardingKey)
     }
 }

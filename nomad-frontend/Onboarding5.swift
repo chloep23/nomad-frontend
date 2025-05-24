@@ -8,225 +8,187 @@
 import SwiftUI
 
 struct Onboarding5: View {
-    
-    @State private var email: String = ""
-    @State private var password: String = ""
+    @ObservedObject var onboardingViewModel: OnboardingViewModel
+    var onComplete: () -> Void
+    var onBack: () -> Void
+    @State private var selectedActivities: Set<String> = []
     
     var body: some View {
-        
-        VStack(alignment: .leading) {
-            
-            Image("traveling")
-                .resizable()
-                .frame(width: 55, height:55)
-                .offset(x: 240, y:-110)
-            Text("Final Step")
-                .offset(x: 90, y: -100)
-                .font(.system(size: 20))
-                .bold()
-                .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
-            
-            Text("What do you like?")
-                .offset(x: -20, y: -85)
-                .font(.system(size: 40))
-                .bold()
-                .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
-            
-            
-            HStack{
-                Button(action: {
-                    print("Placeholder")
-                }) {
-                    Text("Landmarks")
-                        .bold()
-                        .font(.system(size: 15))
-                        .frame(width: 112, height: 30)
-                        .background(Color.clear)
-                        .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 30)
-                                .stroke(Color(red: 4/255, green: 57/255, blue: 11/255), lineWidth: 1)
-                                .shadow(color: .black.opacity(0.5), radius: 2, x: -2, y: 4)
-                        )
-                        .offset(x: -20, y: -70)
-                }
-                Button(action: {
-                    print("Placeholder")
-                }) {
-                    Text("Shopping")
-                        .bold()
-                        .font(.system(size: 15))
-                        .frame(width: 110, height: 30)
-                        .background(Color.clear)
-                        .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 30)
-                                .stroke(Color(red: 4/255, green: 57/255, blue: 11/255), lineWidth: 1)
-                                .shadow(color: .black.opacity(0.5), radius: 2, x: -2, y: 4)
-                        )
-                        .offset(x: -10, y: -70)
-                }
-                Button(action: {
-                    print("Placeholder")
-                }) {
-                    Text("Nature")
-                        .bold()
-                        .font(.system(size: 15))
-                        .frame(width: 80, height: 30)
-                        .background(Color.clear)
-                        .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 30)
-                                .stroke(Color(red: 4/255, green: 57/255, blue: 11/255), lineWidth: 1)
-                                .shadow(color: .black.opacity(0.5), radius: 2, x: -2, y: 4)
-                        )
-                        .offset(x: 0, y: -70)
-                }
-            }
-            .offset(x:-10)
-            
-            HStack{
-                Button(action: {
-                    print("Placeholder")
-                }) {
-                    Text("Museum")
-                        .bold()
-                        .font(.system(size: 15))
-                        .frame(width: 90, height: 30)
-                        .background(Color.clear)
-                        .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 30)
-                                .stroke(Color(red: 4/255, green: 57/255, blue: 11/255), lineWidth: 1)
-                                .shadow(color: .black.opacity(0.5), radius: 2, x: -2, y: 4)
-                        )
-                        .offset(x: -20, y: -70)
-                }
-                Button(action: {
-                    print("Placeholder")
-                }) {
-                    Text("Nightlife")
-                        .bold()
-                        .font(.system(size: 15))
-                        .frame(width: 95, height: 30)
-                        .background(Color.clear)
-                        .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 30)
-                                .stroke(Color(red: 4/255, green: 57/255, blue: 11/255), lineWidth: 1)
-                                .shadow(color: .black.opacity(0.5), radius: 2, x: -2, y: 4)
-                        )
-                        .offset(x: -10, y: -70)
-                }
-                Button(action: {
-                    print("Placeholder")
-                }) {
-                    Text("Art")
-                        .bold()
-                        .font(.system(size: 15))
-                        .frame(width: 50, height: 30)
-                        .background(Color.clear)
-                        .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 30)
-                                .stroke(Color(red: 4/255, green: 57/255, blue: 11/255), lineWidth: 1)
-                                .shadow(color: .black.opacity(0.5), radius: 2, x: -2, y: 4)
-                        )
-                        .offset(x: 0, y: -70)
-                }
-            }
-            .offset(x:20, y:9)
-            
-            HStack{
-                Button(action: {
-                    print("Placeholder")
-                }) {
-                    Text("Entertainment")
-                        .bold()
-                        .font(.system(size: 15))
-                        .frame(width: 142, height: 30)
-                        .background(Color.clear)
-                        .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 30)
-                                .stroke(Color(red: 4/255, green: 57/255, blue: 11/255), lineWidth: 1)
-                                .shadow(color: .black.opacity(0.5), radius: 2, x: -2, y: 4)
-                        )
-                        .offset(x: -20, y: -70)
-                }
-                Button(action: {
-                    print("Placeholder")
-                }) {
-                    Text("Sports")
-                        .bold()
-                        .font(.system(size: 15))
-                        .frame(width: 80, height: 30)
-                        .background(Color.clear)
-                        .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 30)
-                                .stroke(Color(red: 4/255, green: 57/255, blue: 11/255), lineWidth: 1)
-                                .shadow(color: .black.opacity(0.5), radius: 2, x: -2, y: 4)
-                        )
-                        .offset(x: -10, y: -70)
-                }
-                Button(action: {
-                    print("Placeholder")
-                }) {
-                    Text("Other")
-                        .bold()
-                        .font(.system(size: 15))
-                        .frame(width: 80, height: 30)
-                        .background(Color.clear)
-                        .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 30)
-                                .stroke(Color(red: 4/255, green: 57/255, blue: 11/255), lineWidth: 1)
-                                .shadow(color: .black.opacity(0.5), radius: 2, x: -2, y: 4)
-                        )
-                        .offset(x: 0, y: -70)
-                }
-            }
-            .offset(x:-10, y:20)
-            
-            
-            Button(action: {
-                print("Placeholder")
-            }) {
-                HStack{
-                    Text("Begin")
-                        .offset(x:-9)
-                    Image(systemName: "arrow.right")
+        NavigationView {
+            VStack(spacing: 0) {
+                // Top section with image
+                
+                HStack {
+                    Spacer()
+                    Image("traveling")
                         .resizable()
-                        .frame(width: 17, height:13)
-                        .offset(x:3)
+                        .frame(width: 55, height: 55)
+                        .padding(.trailing, 30)
                 }
-                .bold()
-                .font(.system(size: 17))
-                .foregroundColor(Color(red: 255/255, green: 248/255, blue: 228/255))
-                .frame(width: 118, height: 30)
-                .background(Color(red: 4/255, green: 57/255, blue: 11/255))
-                .cornerRadius(30)
-                .offset(x: 180, y: -20)
-                .shadow(color: .black.opacity(0.3), radius: 2, x: 3, y: 5)
+                .padding(.top, 180)
+                
+                // Centered "Final Step" title
+                HStack {
+                    Spacer()
+                    Text("Final Step")
+                        .font(.system(size: 20))
+                        .bold()
+                        .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
+                    Spacer()
+                }
+                .padding(.top, 20)
+                
+                // Main title
+                HStack {
+                    Text("What do you like?")
+                        .font(.system(size: 40))
+                        .bold()
+                        .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
+                        .padding(.leading, 40)
+                    Spacer()
+                }
+                .padding(.top, 15)
+                
+                // Category buttons section - centered
+                VStack(spacing: 15) {
+                    // First row
+                    HStack(spacing: 10) {
+                        Spacer()
+                        CategoryButton(title: "Landmarks", width: 112, selectedActivities: $selectedActivities)
+                        CategoryButton(title: "Shopping", width: 110, selectedActivities: $selectedActivities)
+                        CategoryButton(title: "Nature", width: 80, selectedActivities: $selectedActivities)
+                        Spacer()
+                    }
+                    
+                    // Second row
+                    HStack(spacing: 10) {
+                        Spacer()
+                        CategoryButton(title: "Museum", width: 90, selectedActivities: $selectedActivities)
+                        CategoryButton(title: "Nightlife", width: 95, selectedActivities: $selectedActivities)
+                        CategoryButton(title: "Art", width: 50, selectedActivities: $selectedActivities)
+                        Spacer()
+                    }
+                    
+                    // Third row
+                    HStack(spacing: 10) {
+                        Spacer()
+                        CategoryButton(title: "Entertainment", width: 142, selectedActivities: $selectedActivities)
+                        CategoryButton(title: "Sports", width: 80, selectedActivities: $selectedActivities)
+                        CategoryButton(title: "Other", width: 80, selectedActivities: $selectedActivities)
+                        Spacer()
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 30)
+                
+                // Error message
+                if let errorMessage = onboardingViewModel.errorMessage {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .font(.system(size: 14))
+                        .padding(.top, 10)
+                }
+                
+                // Begin button
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        onboardingViewModel.selectedActivities = selectedActivities
+                        onboardingViewModel.completeOnboarding()
+                        onComplete()
+                    }) {
+                        if onboardingViewModel.isLoading {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: Color(red: 255/255, green: 248/255, blue: 228/255)))
+                                .frame(width: 118, height: 30)
+                                .background(Color(red: 4/255, green: 57/255, blue: 11/255))
+                                .cornerRadius(30)
+                        } else {
+                            HStack(spacing: 8) {
+                                Text("Begin")
+                                Image(systemName: "arrow.right")
+                                    .resizable()
+                                    .frame(width: 17, height: 13)
+                            }
+                            .bold()
+                            .font(.system(size: 17))
+                            .foregroundColor(Color(red: 255/255, green: 248/255, blue: 228/255))
+                            .frame(width: 118, height: 30)
+                            .background(Color(red: 4/255, green: 57/255, blue: 11/255))
+                            .cornerRadius(30)
+                            .shadow(color: .black.opacity(0.3), radius: 2, x: 3, y: 5)
+                        }
+                    }
+                    .disabled(onboardingViewModel.isLoading)
+                    .padding(.trailing, 30)
+                }
+                .padding(.top, 40)
+                
+                Spacer()
+                
+                // Dots indicator
+                HStack {
+                    Spacer()
+                    Image("5dots5")
+                        .resizable()
+                        .frame(width: 120, height: 12)
+                    Spacer()
+                }
+                .padding(.bottom, 50)
             }
-            
-            Image("5dots5")
-                .resizable()
-                .frame(width:120, height:12)
-                .offset(x:65, y:130)
-            
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color(red: 255/255, green: 248/255, blue: 228/255))
+            .navigationBarHidden(true)
+            .onAppear {
+                // Sync local selectedActivities with view model
+                selectedActivities = onboardingViewModel.selectedActivities
+            }
+            .onChange(of: selectedActivities) { _, newValue in
+                // Update view model when local selection changes
+                onboardingViewModel.selectedActivities = newValue
+            }
+            .onChange(of: onboardingViewModel.onboardingComplete) { _, complete in
+                if complete {
+                    // Navigate to MainTabView
+                }
+            }
         }
-        .offset(x:22, y:70)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(red: 255/255, green: 248/255, blue: 228/255))
-        
-
     }
-        
-        
+}
+
+// Helper view for category buttons
+struct CategoryButton: View {
+    let title: String
+    let width: CGFloat
+    @Binding var selectedActivities: Set<String>
+    
+    var isSelected: Bool {
+        selectedActivities.contains(title)
+    }
+    
+    var body: some View {
+        Button(action: {
+            if isSelected {
+                selectedActivities.remove(title)
+            } else {
+                selectedActivities.insert(title)
+            }
+        }) {
+            Text(title)
+                .bold()
+                .font(.system(size: 15))
+                .frame(width: width, height: 30)
+                .background(isSelected ? Color(red: 4/255, green: 57/255, blue: 11/255) : Color.clear)
+                .foregroundColor(isSelected ? Color(red: 255/255, green: 248/255, blue: 228/255) : Color(red: 4/255, green: 57/255, blue: 11/255))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 30)
+                        .stroke(Color(red: 4/255, green: 57/255, blue: 11/255), lineWidth: 1)
+                        .shadow(color: .black.opacity(0.5), radius: 2, x: -2, y: 4)
+                )
+        }
+    }
 }
 
 #Preview {
-    Onboarding5()
+    Onboarding5(onboardingViewModel: OnboardingViewModel(), onComplete: {}, onBack: {})
 }

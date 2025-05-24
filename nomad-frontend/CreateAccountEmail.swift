@@ -11,11 +11,12 @@ import Foundation
 struct CreateAccountEmail: View {
     
     @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var appStateManager: AppStateManager
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
     @State private var localError: String?
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         
@@ -123,12 +124,12 @@ struct CreateAccountEmail: View {
                         .foregroundColor(.gray)
 
                     ZStack(alignment: .leading) {
-                        if cpassword.isEmpty {
+                        if confirmPassword.isEmpty {
                             Text("Confirm Password")
                                 .foregroundColor(.black.opacity(0.45))
                         }
 
-                        SecureField("", text: $cpassword)
+                        SecureField("", text: $confirmPassword)
                             .autocapitalization(.none)
                             .disableAutocorrection(true)
                             .foregroundColor(.black)
@@ -191,51 +192,10 @@ struct CreateAccountEmail: View {
         .offset(x:20, y:40)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(red: 255/255, green: 248/255, blue: 228/255))
-    }
-
-    func registerUser(email: String, password: String) {
-        
-        guard let url = URL(string: "https://zj38dblmvj.execute-api.us-east-1.amazonaws.com/prod/register")
-        
-        else {
-            self.message = "Invalid URL"
-            return
+        .navigationBarHidden(true)
+        .onAppear {
+            authViewModel.appStateManager = appStateManager
         }
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let body: [String: String] = ["email": email, "password": password]
-
-        do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: body, options: [])
-        } catch {
-            self.message = "Failed to encode request"
-            return
-        }
-
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            DispatchQueue.main.async {
-                if let error = error {
-                    self.message = "Error: \(error.localizedDescription)"
-                    return
-                }
-
-                guard let data = data else {
-                    self.message = "No response data"
-                    return
-                }
-
-                if let jsonResponse = try? JSONSerialization.jsonObject(with: data, options: []) {
-                    self.message = "Response: \(jsonResponse)"
-                } else {
-                    self.message = "Invalid response format"
-                }
-            }
-        }
-
-        task.resume()
     }
 }
 

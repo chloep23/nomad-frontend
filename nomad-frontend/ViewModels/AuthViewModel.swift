@@ -1,18 +1,15 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 class AuthViewModel: ObservableObject {
-    @Published var isAuthenticated = false
     @Published var isLoading = false
     @Published var errorMessage: String?
-    @Published var userId: String?
+    
+    var appStateManager: AppStateManager?
     
     init() {
-        // Check if user is already authenticated
-        if TokenManager.shared.getToken() != nil {
-            self.isAuthenticated = true
-            self.userId = TokenManager.shared.getUserId()
-        }
+        // AppStateManager will be injected from the environment
     }
     
     func login(email: String, password: String) {
@@ -34,29 +31,26 @@ class AuthViewModel: ObservableObject {
                     TokenManager.shared.saveUserId(userId)
                 }
                 
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    self.isAuthenticated = true
-                    self.userId = response.userId
+                self.isLoading = false
+                
+                // Notify AppStateManager about successful authentication
+                if let userId = response.userId {
+                    appStateManager?.login(token: response.token, userId: userId)
                 }
             } catch let error as APIError {
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    
-                    switch error {
-                    case .unauthorized:
-                        self.errorMessage = "Invalid email or password"
-                    case .serverError(let message):
-                        self.errorMessage = message
-                    default:
-                        self.errorMessage = "Something went wrong. Please try again."
-                    }
+                self.isLoading = false
+                
+                switch error {
+                case .unauthorized:
+                    self.errorMessage = "Invalid email or password"
+                case .serverError(let message):
+                    self.errorMessage = message
+                default:
+                    self.errorMessage = "Something went wrong. Please try again."
                 }
             } catch {
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    self.errorMessage = "An unexpected error occurred"
-                }
+                self.isLoading = false
+                self.errorMessage = "An unexpected error occurred"
             }
         }
     }
@@ -80,38 +74,29 @@ class AuthViewModel: ObservableObject {
                     TokenManager.shared.saveUserId(userId)
                 }
                 
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    self.isAuthenticated = true
-                    self.userId = response.userId
+                self.isLoading = false
+                
+                // Notify AppStateManager about successful authentication
+                if let userId = response.userId {
+                    appStateManager?.login(token: response.token, userId: userId)
                 }
             } catch let error as APIError {
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    
-                    switch error {
-                    case .serverError(let message):
-                        self.errorMessage = message
-                    default:
-                        self.errorMessage = "Something went wrong. Please try again."
-                    }
+                self.isLoading = false
+                
+                switch error {
+                case .serverError(let message):
+                    self.errorMessage = message
+                default:
+                    self.errorMessage = "Something went wrong. Please try again."
                 }
             } catch {
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    self.errorMessage = "An unexpected error occurred"
-                }
+                self.isLoading = false
+                self.errorMessage = "An unexpected error occurred"
             }
         }
     }
     
     func logout() {
-        _ = TokenManager.shared.deleteToken()
-        TokenManager.shared.clearUserId()
-        
-        DispatchQueue.main.async {
-            self.isAuthenticated = false
-            self.userId = nil
-        }
+        appStateManager?.logout()
     }
 }

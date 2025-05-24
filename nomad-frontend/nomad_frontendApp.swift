@@ -9,25 +9,33 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        Onboarding1()
+        OnboardingFlow()
     }
 }
 
 @main
 struct nomad_frontendApp: App {
-    @StateObject var authViewModel = AuthViewModel()
+    @StateObject var appStateManager = AppStateManager()
     
     var body: some Scene {
         WindowGroup {
-            if authViewModel.isAuthenticated {
-                // This would be your main app after login
-                // For now, let's start with the onboarding process
-                Onboarding1()
-                    .environmentObject(authViewModel)
-            } else {
-                // Show login or create account
-                LoginPage()
-                    .environmentObject(authViewModel)
+            Group {
+                if appStateManager.isLoading {
+                    // Show loading screen while checking app state
+                    LoadingPage()
+                } else if !appStateManager.isAuthenticated {
+                    // Show login or create account
+                    LoginPage()
+                        .environmentObject(appStateManager)
+                } else if !appStateManager.hasCompletedOnboarding {
+                    // Show onboarding flow
+                    OnboardingFlow()
+                        .environmentObject(appStateManager)
+                } else {
+                    // Show main app
+                    MainTabView()
+                        .environmentObject(appStateManager)
+                }
             }
         }
     }

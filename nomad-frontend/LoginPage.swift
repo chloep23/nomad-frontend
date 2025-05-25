@@ -9,7 +9,6 @@ import SwiftUI
 
 struct LoginPage: View {
     @EnvironmentObject var authViewModel: AuthViewModel
-    @EnvironmentObject var appStateManager: AppStateManager
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var navigateToCreateAccount = false
@@ -163,7 +162,7 @@ struct LoginPage: View {
                     Text("Don't have an account?")
                         .foregroundColor(.black.opacity(0.45))
                     
-                    NavigationLink(destination: CreateAccountPage().environmentObject(authViewModel).environmentObject(appStateManager)) {
+                    NavigationLink(destination: CreateAccountPage().environmentObject(authViewModel)) {
                         Text("Sign up")
                             .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
                             .bold()
@@ -176,13 +175,11 @@ struct LoginPage: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(red: 255/255, green: 248/255, blue: 228/255))
             .navigationBarHidden(true)
-            .onAppear {
-                authViewModel.appStateManager = appStateManager
-            }
         }
     }
 }
 
 #Preview {
     LoginPage()
+        .environmentObject(AuthViewModel())
 }

@@ -12,8 +12,8 @@ struct ProfilePage1: View {
     @State private var searchText: String = ""
     @State private var location: String = "Houston, TX"
     
-    // Profile view model for logout functionality
-    @StateObject private var profileViewModel = ProfileViewModel()
+    // Use AuthViewModel for logout functionality
+    @EnvironmentObject var authViewModel: AuthViewModel
     
     // Navigation state variables
     @State private var showLondonPage = false
@@ -102,9 +102,9 @@ struct ProfilePage1: View {
                             )
                     }
                     
-                    // Temporary logout button
+                    // Logout button using AuthViewModel
                     Button(action: {
-                        profileViewModel.logout()
+                        authViewModel.logout()
                     }) {
                         Text("Logout")
                             .font(.system(size: 15))
@@ -242,4 +242,5 @@ struct CityGridItem: View {
 
 #Preview {
     ProfilePage1()
+        .environmentObject(AuthViewModel())
 }

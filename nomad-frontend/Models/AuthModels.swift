@@ -4,11 +4,48 @@ struct AuthResponse: Codable {
     let message: String?
     let userId: String?
     let token: String
+    let user: AuthUser? // For social auth responses (Google/Apple)
+    
+    // Computed property to get userId from either direct field or user object
+    var effectiveUserId: String? {
+        return userId ?? user?.userId
+    }
     
     enum CodingKeys: String, CodingKey {
         case message
         case userId
         case token
+        case user
+    }
+}
+
+// Generic auth user object for social sign-in (Google/Apple)
+struct AuthUser: Codable {
+    let userId: String
+    let email: String
+    let name: String
+    let profilePicture: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case userId
+        case email
+        case name
+        case profilePicture = "profile_picture"
+    }
+}
+
+// Legacy Google auth user object (keeping for backward compatibility)
+struct GoogleUser: Codable {
+    let userId: String
+    let email: String
+    let name: String
+    let profilePicture: String
+    
+    enum CodingKeys: String, CodingKey {
+        case userId
+        case email
+        case name
+        case profilePicture = "profile_picture"
     }
 }
 

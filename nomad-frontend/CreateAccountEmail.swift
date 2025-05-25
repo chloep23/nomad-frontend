@@ -11,7 +11,6 @@ import Foundation
 struct CreateAccountEmail: View {
     
     @EnvironmentObject var authViewModel: AuthViewModel
-    @EnvironmentObject var appStateManager: AppStateManager
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
@@ -19,187 +18,176 @@ struct CreateAccountEmail: View {
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        
-        VStack(alignment: .leading) {
-            HStack{
-                Button(action: {
-                        dismiss()  // This makes it behave like a back button
-                    }) {
-                        Image(systemName: "arrow.left")
-                            .resizable()
-                            .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
-                            .frame(width: 30, height: 23)
-                            .offset(x: 24, y: -290)
-                    }
-                    
+        NavigationStack {
+            VStack(alignment: .leading) {
                 Image("compass")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 370, height: 370)
                     .rotationEffect(.degrees(-35))
-                    .offset(x: 120, y: -200)
-            }
-            
-            Text("Create Account")
-                .offset(x: 26, y: -290)
-                .font(.system(size: 40))
-                .bold()
-                .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
-            Text("Let's get started")
-                .offset(x: 32, y: -276)
-                .font(.system(size: 20))
-                .bold()
-                .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
-           
-            // Email TextField with Underline and Shadow
-            VStack(alignment: .leading, spacing: 0) {
-                HStack {
-                    Image("email")
-                        .resizable()
-                        .foregroundColor(.gray)
-                        .frame(width: 22, height: 17)
-
-                    ZStack(alignment: .leading) {
+                    .offset(x: 175, y: -150)
+                
+                Text("Create Account")
+                    .offset(x: 41, y: -240)
+                    .font(.system(size: 40))
+                    .bold()
+                    .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
+                Text("Let's get started")
+                    .offset(x: 41, y: -226)
+                    .font(.system(size: 20))
+                    .bold()
+                    .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
+               
+                
+                VStack(alignment: .leading, spacing: 0){
+                    HStack {
+                        Image("user")
+                            .foregroundColor(.gray)
                         if email.isEmpty {
-                            Text("Email")
-                                .foregroundColor(.black.opacity(0.45))
-                        }
+                                Text("Email")
+                                    .foregroundColor(.black.opacity(0.45))
+                            }
 
-                        TextField("", text: $email)
-                            .autocapitalization(.none)
-                            .disableAutocorrection(true)
-                            .foregroundColor(.black)
-                            .font(.system(size: 18))
+                            TextField("", text: $email)
+                                .foregroundColor(.gray.opacity(1))
+                                .font(.system(size: 18))
                     }
+                    .padding(.bottom, 4)
+                    .offset(x:2)
+                    .overlay(
+                        Rectangle()
+                            .frame(width: 330, height: 1)
+                            .foregroundColor(.gray.opacity(5))
+                            .shadow(color: .gray.opacity(0.2), radius: 3, x: 0, y: 5)
+                            .offset(x: -40),
+                        alignment: .bottom
+                    )
+                    .offset(x: 41, y: -208)
                 }
-                .padding(.bottom, 5)
-                .offset(x:5)
-                .overlay(
-                    Rectangle()
-                        .frame(width: 300, height: 1)
-                        .offset(x:-55)
-                        .foregroundColor(.gray.opacity(0.5))
-                        .shadow(color: .black.opacity(0.5), radius: 3, x: 1, y: 4),
-                    alignment: .bottom
-                )
-                .offset(x: 31, y: -256)
-            }
-
-            // Password SecureField with Underline and Shadow
-            VStack(alignment: .leading, spacing: 0) {
-                HStack {
-                    Image("lock")
-                        .foregroundColor(.gray)
-
-                    ZStack(alignment: .leading) {
+                
+                
+                VStack(alignment: .leading, spacing: 0){
+                    HStack {
+                        Image("lock")
+                            .foregroundColor(.gray)
                         if password.isEmpty {
                             Text("Password")
                                 .foregroundColor(.black.opacity(0.45))
-                        }
+                                .offset(x:3)
+                            }
 
-                        SecureField("", text: $password)
-                            .autocapitalization(.none)
-                            .disableAutocorrection(true)
-                            .foregroundColor(.black)
-                            .font(.system(size: 18))
+                            SecureField("", text: $password)
+                            .foregroundColor(.black.opacity(0.45))
+                                .font(.system(size: 18))
                     }
+                    .padding(.bottom, 4)
+                    .offset(x:2)
+                    .overlay(
+                        Rectangle()
+                            .frame(width: 330, height: 1)
+                            .foregroundColor(.gray.opacity(5))
+                            .shadow(color: .gray.opacity(0.5), radius: 3, x: 0, y: 5)
+                            .offset(x: -40),
+                        alignment: .bottom)
+                    .offset(x: 41, y: -180)
                 }
-                .padding(.bottom, 5)
-                .offset(x:5)
-                .overlay(
-                    Rectangle()
-                        .frame(width: 300, height: 1)
-                        .offset(x:-55)
-                        .foregroundColor(.gray.opacity(0.5))
-                        .shadow(color: .black.opacity(0.5), radius: 3, x: 1, y: 4),
-                    alignment: .bottom
-                )
-                .offset(x: 31, y: -230)
-            }
-
-            // Confirm Password SecureField with Underline and Shadow
-            VStack(alignment: .leading, spacing: 0) {
-                HStack {
-                    Image("lock")
-                        .foregroundColor(.gray)
-
-                    ZStack(alignment: .leading) {
+                
+                VStack(alignment: .leading, spacing: 0){
+                    HStack {
+                        Image("lock")
+                            .foregroundColor(.gray)
                         if confirmPassword.isEmpty {
                             Text("Confirm Password")
                                 .foregroundColor(.black.opacity(0.45))
-                        }
+                                .offset(x:3)
+                            }
 
-                        SecureField("", text: $confirmPassword)
-                            .autocapitalization(.none)
-                            .disableAutocorrection(true)
-                            .foregroundColor(.black)
+                            SecureField("", text: $confirmPassword)
+                            .foregroundColor(.black.opacity(0.45))
+                                .font(.system(size: 18))
+                    }
+                    .padding(.bottom, 4)
+                    .offset(x:2)
+                    .overlay(
+                        Rectangle()
+                            .frame(width: 330, height: 1)
+                            .foregroundColor(.gray.opacity(5))
+                            .shadow(color: .gray.opacity(0.5), radius: 3, x: 0, y: 5)
+                            .offset(x: -40),
+                        alignment: .bottom)
+                    .offset(x: 41, y: -152)
+                }
+                
+                if let error = localError ?? authViewModel.errorMessage {
+                    Text(error)
+                        .foregroundColor(.red)
+                        .font(.caption)
+                        .offset(x: 45, y: -140)
+                }
+                
+                Button(action: {
+                    createAccount()
+                }) {
+                    if authViewModel.isLoading {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                    } else {
+                        Text("Create Account")
+                            .bold()
                             .font(.system(size: 18))
+                            .foregroundColor(Color(red: 255/255, green: 248/255, blue: 228/255))
                     }
                 }
-                .padding(.bottom, 5)
-                .offset(x:5)
-                .overlay(
-                    Rectangle()
-                        .frame(width: 300, height: 1)
-                        .offset(x:-55)
-                        .foregroundColor(.gray.opacity(0.5))
-                        .shadow(color: .black.opacity(0.5), radius: 3, x: 1, y: 4),
-                    alignment: .bottom
-                )
-                .offset(x: 31, y: -204)
-            }
-            
-            // Add validation and error display
-            if let error = localError ?? authViewModel.errorMessage {
-                Text(error)
-                    .foregroundColor(.red)
-                    .font(.caption)
-                    .offset(x: 31, y: -220)
-            }
-            
-            // Update the Ready button
-            Button(action: {
-                if password != confirmPassword {
-                    localError = "Passwords do not match"
-                    return
-                }
-                localError = nil
-                authViewModel.register(email: email, password: password)
-            }) {
-                if authViewModel.isLoading {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                } else {
-                    HStack{
-                        Text("Ready")
-                            .offset(x:-7)
-                        Image(systemName: "arrow.right")
-                            .resizable()
-                            .frame(width: 17, height:13)
+                .frame(width: 310, height: 32)
+                .background(Color(red: 4/255, green: 57/255, blue: 11/255))
+                .cornerRadius(30)
+                .offset(x: 45, y: -120)
+                .shadow(color: .black.opacity(0.3), radius: 2, x: 3, y: 5)
+                .disabled(authViewModel.isLoading)
+                
+                HStack {
+                    Text("Already have an account?")
+                        .foregroundColor(.black.opacity(0.45))
+                    
+                    NavigationLink(destination: LoginPage().environmentObject(authViewModel)) {
+                        Text("Login")
+                            .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
+                            .bold()
                     }
-                    .bold()
-                    .font(.system(size: 18))
-                    .foregroundColor(Color(red: 255/255, green: 248/255, blue: 228/255))
                 }
+                .font(.system(size: 21))
+                .offset(x: 70, y: -100)
             }
-            .frame(width: 115, height: 32)
-            .background(Color(red: 4/255, green: 57/255, blue: 11/255))
-            .cornerRadius(30)
-            .offset(x: 215, y: -180)
-            .shadow(color: .black.opacity(0.3), radius: 2, x: 3, y: 5)
-            .disabled(authViewModel.isLoading)
+            .offset(y:40)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color(red: 255/255, green: 248/255, blue: 228/255))
+            .navigationBarHidden(true)
         }
-        .offset(x:20, y:40)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(red: 255/255, green: 248/255, blue: 228/255))
-        .navigationBarHidden(true)
-        .onAppear {
-            authViewModel.appStateManager = appStateManager
+    }
+    
+    private func createAccount() {
+        localError = nil
+        
+        guard !email.isEmpty, !password.isEmpty, !confirmPassword.isEmpty else {
+            localError = "All fields are required"
+            return
         }
+        
+        guard password == confirmPassword else {
+            localError = "Passwords do not match"
+            return
+        }
+        
+        guard password.count >= 6 else {
+            localError = "Password must be at least 6 characters"
+            return
+        }
+        
+        authViewModel.register(email: email, password: password)
     }
 }
 
-        
 #Preview {
     CreateAccountEmail()
+        .environmentObject(AuthViewModel())
 }

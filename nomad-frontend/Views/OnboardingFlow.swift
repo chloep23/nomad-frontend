@@ -2,7 +2,7 @@ import SwiftUI
 
 struct OnboardingFlow: View {
     @StateObject private var onboardingViewModel = OnboardingViewModel()
-    @EnvironmentObject var appStateManager: AppStateManager
+    @EnvironmentObject var authViewModel: AuthViewModel
     @State private var currentStep = 1
     
     var body: some View {
@@ -48,8 +48,8 @@ struct OnboardingFlow: View {
         }
         .onChange(of: onboardingViewModel.onboardingComplete) { _, complete in
             if complete {
-                // Update app state manager
-                appStateManager.completeOnboarding()
+                // Update auth view model
+                authViewModel.completeOnboarding()
             }
         }
     }

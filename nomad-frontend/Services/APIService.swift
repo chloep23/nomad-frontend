@@ -47,6 +47,44 @@ class APIService {
         }
     }
     
+    func googleAuth(idToken: String) async throws -> AuthResponse {
+        let endpoint = "\(baseURL)/google"
+        let body: [String: Any] = ["idToken": idToken]
+        
+        let data = try await sendRequest(to: endpoint, method: "POST", body: body)
+        
+        do {
+            let decoder = JSONDecoder()
+            return try decoder.decode(AuthResponse.self, from: data)
+        } catch {
+            throw APIError.decodingError(error)
+        }
+    }
+    
+    func appleAuth(result: AppleSignInResult) async throws -> AuthResponse {
+        let endpoint = "\(baseURL)/apple"
+        
+        let body: [String: Any] = [
+            "identityToken": result.identityToken,
+            "authorizationCode": result.authorizationCode,
+            "email": result.email ?? "",
+            "fullName": [
+                "givenName": result.fullName?.givenName ?? "",
+                "familyName": result.fullName?.familyName ?? ""
+            ],
+            "nonce": result.nonce
+        ]
+        
+        let data = try await sendRequest(to: endpoint, method: "POST", body: body)
+        
+        do {
+            let decoder = JSONDecoder()
+            return try decoder.decode(AuthResponse.self, from: data)
+        } catch {
+            throw APIError.decodingError(error)
+        }
+    }
+    
     // MARK: - Profile Methods
     
     func getUserProfile() async throws -> UserProfile {
@@ -62,7 +100,7 @@ class APIService {
     }
     
     func updateUserProfile(_ request: ProfileUpdateRequest) async throws {
-        let endpoint = "\(baseURL)/profile"
+        let endpoint = "\(baseURL)/updateUser"
         
         let body: [String: Any] = [
             "name": request.name,

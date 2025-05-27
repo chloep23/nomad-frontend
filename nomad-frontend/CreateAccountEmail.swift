@@ -38,91 +38,78 @@ struct CreateAccountEmail: View {
                     .bold()
                     .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
                
+                // Email field
+                CustomTextField(
+                    placeholder: "Email",
+                    text: $email,
+                    icon: "user",
+                    isEmail: true
+                )
+                .frame(width: 330)
+                .offset(x: 43, y: -208)
                 
-                VStack(alignment: .leading, spacing: 0){
-                    HStack {
-                        Image("user")
+                // Password field
+                CustomTextField(
+                    placeholder: "Password",
+                    text: $password,
+                    icon: "lock",
+                    isSecure: true
+                )
+                .frame(width: 330)
+                .offset(x: 43, y: -180)
+                
+                // Confirm Password field
+                CustomTextField(
+                    placeholder: "Confirm Password",
+                    text: $confirmPassword,
+                    icon: "lock",
+                    isSecure: true
+                )
+                .frame(width: 330)
+                .offset(x: 43, y: -152)
+                
+                // Password requirements - show when password field has text
+                if !password.isEmpty {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Password must contain:")
+                            .font(.caption)
                             .foregroundColor(.gray)
-                        if email.isEmpty {
-                                Text("Email")
-                                    .foregroundColor(.black.opacity(0.45))
-                            }
-
-                            TextField("", text: $email)
-                                .foregroundColor(.gray.opacity(1))
-                                .font(.system(size: 18))
+                        
+                        HStack {
+                            Image(systemName: password.count >= 8 ? "checkmark.circle.fill" : "circle")
+                                .foregroundColor(password.count >= 8 ? .green : .gray)
+                                .font(.caption)
+                            Text("At least 8 characters")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                        
+                        HStack {
+                            Image(systemName: containsUppercase(password) ? "checkmark.circle.fill" : "circle")
+                                .foregroundColor(containsUppercase(password) ? .green : .gray)
+                                .font(.caption)
+                            Text("One uppercase letter")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                        
+                        HStack {
+                            Image(systemName: containsNumber(password) ? "checkmark.circle.fill" : "circle")
+                                .foregroundColor(containsNumber(password) ? .green : .gray)
+                                .font(.caption)
+                            Text("One number")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
                     }
-                    .padding(.bottom, 4)
-                    .offset(x:2)
-                    .overlay(
-                        Rectangle()
-                            .frame(width: 330, height: 1)
-                            .foregroundColor(.gray.opacity(5))
-                            .shadow(color: .gray.opacity(0.2), radius: 3, x: 0, y: 5)
-                            .offset(x: -40),
-                        alignment: .bottom
-                    )
-                    .offset(x: 41, y: -208)
-                }
-                
-                
-                VStack(alignment: .leading, spacing: 0){
-                    HStack {
-                        Image("lock")
-                            .foregroundColor(.gray)
-                        if password.isEmpty {
-                            Text("Password")
-                                .foregroundColor(.black.opacity(0.45))
-                                .offset(x:3)
-                            }
-
-                            SecureField("", text: $password)
-                            .foregroundColor(.black.opacity(0.45))
-                                .font(.system(size: 18))
-                    }
-                    .padding(.bottom, 4)
-                    .offset(x:2)
-                    .overlay(
-                        Rectangle()
-                            .frame(width: 330, height: 1)
-                            .foregroundColor(.gray.opacity(5))
-                            .shadow(color: .gray.opacity(0.5), radius: 3, x: 0, y: 5)
-                            .offset(x: -40),
-                        alignment: .bottom)
-                    .offset(x: 41, y: -180)
-                }
-                
-                VStack(alignment: .leading, spacing: 0){
-                    HStack {
-                        Image("lock")
-                            .foregroundColor(.gray)
-                        if confirmPassword.isEmpty {
-                            Text("Confirm Password")
-                                .foregroundColor(.black.opacity(0.45))
-                                .offset(x:3)
-                            }
-
-                            SecureField("", text: $confirmPassword)
-                            .foregroundColor(.black.opacity(0.45))
-                                .font(.system(size: 18))
-                    }
-                    .padding(.bottom, 4)
-                    .offset(x:2)
-                    .overlay(
-                        Rectangle()
-                            .frame(width: 330, height: 1)
-                            .foregroundColor(.gray.opacity(5))
-                            .shadow(color: .gray.opacity(0.5), radius: 3, x: 0, y: 5)
-                            .offset(x: -40),
-                        alignment: .bottom)
-                    .offset(x: 41, y: -152)
+                    .offset(x: 45, y: -140)
                 }
                 
                 if let error = localError ?? authViewModel.errorMessage {
                     Text(error)
                         .foregroundColor(.red)
                         .font(.caption)
-                        .offset(x: 45, y: -140)
+                        .offset(x: 45, y: !password.isEmpty ? -120 : -140)
                 }
                 
                 Button(action: {
@@ -139,9 +126,9 @@ struct CreateAccountEmail: View {
                     }
                 }
                 .frame(width: 310, height: 32)
-                .background(Color(red: 4/255, green: 57/255, blue: 11/255))
+                .background(canCreateAccount() ? Color(red: 4/255, green: 57/255, blue: 11/255) : Color.gray)
                 .cornerRadius(30)
-                .offset(x: 45, y: -120)
+                .offset(x: 45, y: !password.isEmpty ? -100 : -120)
                 .shadow(color: .black.opacity(0.3), radius: 2, x: 3, y: 5)
                 .disabled(authViewModel.isLoading)
                 
@@ -156,7 +143,7 @@ struct CreateAccountEmail: View {
                     }
                 }
                 .font(.system(size: 21))
-                .offset(x: 70, y: -100)
+                .offset(x: 70, y: !password.isEmpty ? -80 : -100)
             }
             .offset(y:40)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -165,11 +152,46 @@ struct CreateAccountEmail: View {
         }
     }
     
+    // Simple check for button state - doesn't trigger validation
+    private func canCreateAccount() -> Bool {
+        return !email.isEmpty && 
+               !password.isEmpty && 
+               !confirmPassword.isEmpty &&
+               password.count >= 8
+    }
+    
+    private func isValidEmail(_ email: String) -> Bool {
+        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        let emailPredicate = NSPredicate(format:"SELF MATCHES %@", emailRegex)
+        return emailPredicate.evaluate(with: email)
+    }
+    
+    private func isValidPassword(_ password: String) -> Bool {
+        return password.count >= 8 && 
+               containsUppercase(password) && 
+               containsNumber(password)
+    }
+    
+    private func containsUppercase(_ string: String) -> Bool {
+        return string.range(of: "[A-Z]", options: .regularExpression) != nil
+    }
+    
+    private func containsNumber(_ string: String) -> Bool {
+        return string.range(of: "[0-9]", options: .regularExpression) != nil
+    }
+    
     private func createAccount() {
+        // Clear any previous error
         localError = nil
         
+        // Validate all fields when user attempts to create account
         guard !email.isEmpty, !password.isEmpty, !confirmPassword.isEmpty else {
             localError = "All fields are required"
+            return
+        }
+        
+        guard isValidEmail(email) else {
+            localError = "Please enter a valid email address"
             return
         }
         
@@ -178,11 +200,12 @@ struct CreateAccountEmail: View {
             return
         }
         
-        guard password.count >= 6 else {
-            localError = "Password must be at least 6 characters"
+        guard isValidPassword(password) else {
+            localError = "Password does not meet requirements"
             return
         }
         
+        // All validation passed, proceed with account creation
         authViewModel.register(email: email, password: password)
     }
 }

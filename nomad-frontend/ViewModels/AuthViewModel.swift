@@ -42,27 +42,56 @@ class AuthViewModel: ObservableObject {
     
     private func verifyOnboardingStatusFromServer() async {
         do {
+            // Add debugging
+            if let token = TokenManager.shared.getToken() {
+                print("DEBUG: Using token for profile request: \(token)")
+            }
+            if let userId = TokenManager.shared.getUserId() {
+                print("DEBUG: Stored userId: \(userId)")
+            }
+            
             let profile = try await APIService.shared.getUserProfile()
+            
+            print("DEBUG: Successfully got profile: \(profile)")
             
             // Update local onboarding status based on server response
             if let serverOnboardingStatus = profile.isOnboardingComplete {
                 hasCompletedOnboarding = serverOnboardingStatus
                 TokenManager.shared.saveOnboardingComplete(serverOnboardingStatus)
+                print("DEBUG: Updated onboarding status to: \(serverOnboardingStatus)")
             }
         } catch let error as APIError {
             // Handle specific API errors more gracefully
             switch error {
             case .serverError(let message):
                 print("Could not verify onboarding status from server: \(message)")
+                
+                // Add more debugging
+                print("DEBUG: Full error details: \(error)")
+                if let token = TokenManager.shared.getToken() {
+                    print("DEBUG: Token being used: \(String(token.prefix(50)))...")
+                }
+                
                 // If it's a 404, the user profile might not exist yet
-                // For new users, this is expected - keep local status
                 if message.contains("404") {
                     print("User profile not found on server, using local onboarding status")
+                    
+                    // If local onboarding is complete but server profile doesn't exist,
+                    // this indicates a backend synchronization issue
+                    if hasCompletedOnboarding {
+                        print("Warning: Local onboarding is complete but server profile is missing")
+                        print("This may indicate a backend sync issue - keeping local status")
+                        // Keep the local onboarding status as true since user already completed it
+                        // The next time they complete onboarding flow, it should sync with server
+                    }
                 }
             case .unauthorized:
                 print("Unauthorized when verifying onboarding status - token may be invalid")
-                // Consider logging out the user if token is invalid
-                // logout()
+                // If token is invalid, logout the user
+                print("Token appears to be invalid, logging out user")
+                DispatchQueue.main.async {
+                    self.logout()
+                }
             default:
                 print("Could not verify onboarding status from server: \(error)")
             }
@@ -247,7 +276,7 @@ class AuthViewModel: ObservableObject {
     func logout() {
         isAuthenticated = false
         hasCompletedOnboarding = false
-        TokenManager.shared.deleteToken()
+        _ = TokenManager.shared.deleteToken()
         TokenManager.shared.clearUserId()
         TokenManager.shared.clearOnboardingStatus()
         errorMessage = nil

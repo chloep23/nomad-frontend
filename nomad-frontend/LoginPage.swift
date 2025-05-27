@@ -34,61 +34,26 @@ struct LoginPage: View {
                     .bold()
                     .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
                
+                // Email field
+                CustomTextField(
+                    placeholder: "Email",
+                    text: $email,
+                    icon: "user",
+                    isEmail: true
+                )
+                .frame(width: 330)
+                .offset(x: 43, y: -208)
                 
-                VStack(alignment: .leading, spacing: 0){
-                    HStack {
-                        Image("user")
-                            .foregroundColor(.gray)
-                        if email.isEmpty { //when user hasn't typed anything
-                                Text("Username")
-                                    .foregroundColor(.black.opacity(0.45))
-                            }
-
-                            TextField("", text: $email)
-                                .foregroundColor(.gray.opacity(1))
-                                .font(.system(size: 18))
-                    }
-                    .padding(.bottom, 4)
-                    .offset(x:2)
-                    .overlay(
-                        Rectangle()
-                            .frame(width: 330, height: 1)
-                            .foregroundColor(.gray.opacity(5))
-                            .shadow(color: .gray.opacity(0.2), radius: 3, x: 0, y: 5)
-                            .offset(x: -40),
-                        alignment: .bottom
-                    )
-                    .offset(x: 41, y: -208)
-                }
+                // Password field
+                CustomTextField(
+                    placeholder: "Password",
+                    text: $password,
+                    icon: "lock",
+                    isSecure: true
+                )
+                .frame(width: 330)
+                .offset(x: 43, y: -180)
                 
-                
-                VStack(alignment: .leading, spacing: 0){
-                    HStack {
-                        Image("lock")
-                            .foregroundColor(.gray)
-                        if password.isEmpty { //when user hasn't typed anything
-                            Text("Password")
-                                .foregroundColor(.black.opacity(0.45))
-                                .offset(x:3)
-                            }
-
-                            TextField("", text: $password)
-                            .foregroundColor(.black.opacity(0.45))
-                                .font(.system(size: 18))
-                    }
-                    .padding(.bottom, 4)
-                    .offset(x:2)
-                    .overlay(
-                        Rectangle()
-                            .frame(width: 330, height: 1)
-                            .foregroundColor(.gray.opacity(5))
-                            .shadow(color: .gray.opacity(0.5), radius: 3, x: 0, y: 5)
-                            .offset(x: -40),
-                        alignment: .bottom)
-                    .offset(x: 41, y: -180)
-                }
-                
-            
                 HStack {
                     Text("Forgot?")
                         .offset(x: 325, y: -178)
@@ -155,8 +120,6 @@ struct LoginPage: View {
                     }
                     .offset(x:155, y:-130)
                 }
-                
-                
                 
                 HStack {
                     Text("Don't have an account?")

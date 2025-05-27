@@ -26,13 +26,14 @@ struct Onboarding1: View {
                 .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
             
             // Input Field
-            VStack {
+            VStack(alignment: .leading, spacing: 8) {
                 ZStack(alignment: .leading) {
                     if onboardingViewModel.name.isEmpty {
                         Text("Your name")
                             .font(.system(size: 15))
                             .foregroundColor(.black.opacity(0.45))
                             .offset(x: 18)
+                            .allowsHitTesting(false)
                     }
                     
                     TextField("", text: $onboardingViewModel.name)
@@ -41,14 +42,36 @@ struct Onboarding1: View {
                         .font(.system(size: 15))
                         .frame(width: 300, height: 37)
                         .background(Color.clear)
+                        .textInputAutocapitalization(.words)
+                        .autocorrectionDisabled()
+                        .onChange(of: onboardingViewModel.name) { _, _ in
+                            // Clear error when user starts typing
+                            if onboardingViewModel.nameError != nil {
+                                onboardingViewModel.clearNameError()
+                            }
+                        }
                         .overlay(
                             RoundedRectangle(cornerRadius: 30)
-                                .stroke(.black.opacity(0.45))
+                                .stroke(onboardingViewModel.nameError != nil ? .red : .black.opacity(0.45))
                                 .shadow(color: .black.opacity(0.8), radius: 2, x: -2, y: 4)
                         )
                 }
-                .offset(x: -20, y: -65)
+                
+                // Error message
+                if let nameError = onboardingViewModel.nameError {
+                    Text(nameError)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                        .padding(.leading, 18)
+                }
             }
+            .offset(x: -20, y: -65)
+            
+            // Helper text
+            Text("Enter your full name as you'd like others to see it")
+                .font(.caption)
+                .foregroundColor(.gray)
+                .offset(x: -2, y: -50)
             
             Button(action: {
                 if onboardingViewModel.validateStep1() {
@@ -67,11 +90,11 @@ struct Onboarding1: View {
                 .font(.system(size: 17))
                 .foregroundColor(Color(red: 255/255, green: 248/255, blue: 228/255))
                 .frame(width: 108, height: 32)
-                .background(onboardingViewModel.validateStep1() ? Color(red: 4/255, green: 57/255, blue: 11/255) : Color.gray)
+                .background(canProceed() ? Color(red: 4/255, green: 57/255, blue: 11/255) : Color.gray)
                 .cornerRadius(30)
                 .shadow(color: .black.opacity(0.3), radius: 2, x: 3, y: 5)
             }
-            .disabled(!onboardingViewModel.validateStep1())
+            .disabled(!canProceed())
             .offset(x: 180, y: -20)
             
             Image("5dots1")
@@ -83,6 +106,15 @@ struct Onboarding1: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(red: 255/255, green: 248/255, blue: 228/255))
         .navigationBarHidden(true)
+        .onAppear {
+            // Clear any previous errors when the view appears
+            onboardingViewModel.clearNameError()
+        }
+    }
+    
+    // Simple check that doesn't trigger validation
+    private func canProceed() -> Bool {
+        return !onboardingViewModel.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }
 

@@ -16,16 +16,27 @@ struct Onboarding5: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                // Top section with image
-                
+                // Top section with back button and image
                 HStack {
+                    Button(action: {
+                        onBack()
+                    }) {
+                        Image(systemName: "arrow.left")
+                            .resizable()
+                            .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
+                            .frame(width: 20, height: 16)
+                    }
+                    .padding(.leading, 30)
+                    .padding(.top, 120)
+                    
                     Spacer()
+                    
                     Image("traveling")
                         .resizable()
                         .frame(width: 55, height: 55)
                         .padding(.trailing, 30)
+                        .padding(.top, 120)
                 }
-                .padding(.top, 180)
                 
                 // Centered "Final Step" title
                 HStack {
@@ -49,32 +60,34 @@ struct Onboarding5: View {
                 }
                 .padding(.top, 15)
                 
+                
+                
                 // Category buttons section - centered
                 VStack(spacing: 15) {
                     // First row
                     HStack(spacing: 10) {
                         Spacer()
-                        CategoryButton(title: "Landmarks", width: 112, selectedActivities: $selectedActivities)
-                        CategoryButton(title: "Shopping", width: 110, selectedActivities: $selectedActivities)
-                        CategoryButton(title: "Nature", width: 80, selectedActivities: $selectedActivities)
+                        CategoryButton(title: "Landmarks", selectedActivities: $selectedActivities)
+                        CategoryButton(title: "Shopping", selectedActivities: $selectedActivities)
+                        CategoryButton(title: "Nature", selectedActivities: $selectedActivities)
                         Spacer()
                     }
                     
                     // Second row
                     HStack(spacing: 10) {
                         Spacer()
-                        CategoryButton(title: "Museum", width: 90, selectedActivities: $selectedActivities)
-                        CategoryButton(title: "Nightlife", width: 95, selectedActivities: $selectedActivities)
-                        CategoryButton(title: "Art", width: 50, selectedActivities: $selectedActivities)
+                        CategoryButton(title: "Museum", selectedActivities: $selectedActivities)
+                        CategoryButton(title: "Nightlife", selectedActivities: $selectedActivities)
+                        CategoryButton(title: "Art", selectedActivities: $selectedActivities)
                         Spacer()
                     }
                     
                     // Third row
                     HStack(spacing: 10) {
                         Spacer()
-                        CategoryButton(title: "Entertainment", width: 142, selectedActivities: $selectedActivities)
-                        CategoryButton(title: "Sports", width: 80, selectedActivities: $selectedActivities)
-                        CategoryButton(title: "Other", width: 80, selectedActivities: $selectedActivities)
+                        CategoryButton(title: "Entertainment", selectedActivities: $selectedActivities)
+                        CategoryButton(title: "Sports", selectedActivities: $selectedActivities)
+                        CategoryButton(title: "Other", selectedActivities: $selectedActivities)
                         Spacer()
                     }
                 }
@@ -82,6 +95,13 @@ struct Onboarding5: View {
                 .padding(.top, 30)
                 
                 // Error message
+                if let activitiesError = onboardingViewModel.activitiesError {
+                    Text(activitiesError)
+                        .foregroundColor(.red)
+                        .font(.caption)
+                        .padding(.top, 10)
+                }
+                
                 if let errorMessage = onboardingViewModel.errorMessage {
                     Text(errorMessage)
                         .foregroundColor(.red)
@@ -94,8 +114,10 @@ struct Onboarding5: View {
                     Spacer()
                     Button(action: {
                         onboardingViewModel.selectedActivities = selectedActivities
-                        onboardingViewModel.completeOnboarding()
-                        onComplete()
+                        if onboardingViewModel.validateStep5() {
+                            onboardingViewModel.completeOnboarding()
+                            onComplete()
+                        }
                     }) {
                         if onboardingViewModel.isLoading {
                             ProgressView()
@@ -114,12 +136,12 @@ struct Onboarding5: View {
                             .font(.system(size: 17))
                             .foregroundColor(Color(red: 255/255, green: 248/255, blue: 228/255))
                             .frame(width: 118, height: 30)
-                            .background(Color(red: 4/255, green: 57/255, blue: 11/255))
+                            .background(canProceed() ? Color(red: 4/255, green: 57/255, blue: 11/255) : Color.gray)
                             .cornerRadius(30)
                             .shadow(color: .black.opacity(0.3), radius: 2, x: 3, y: 5)
                         }
                     }
-                    .disabled(onboardingViewModel.isLoading)
+                    .disabled(onboardingViewModel.isLoading || !canProceed())
                     .padding(.trailing, 30)
                 }
                 .padding(.top, 40)
@@ -142,10 +164,16 @@ struct Onboarding5: View {
             .onAppear {
                 // Sync local selectedActivities with view model
                 selectedActivities = onboardingViewModel.selectedActivities
+                // Clear any previous errors
+                onboardingViewModel.clearActivitiesError()
             }
             .onChange(of: selectedActivities) { _, newValue in
                 // Update view model when local selection changes
                 onboardingViewModel.selectedActivities = newValue
+                // Clear error when user makes a selection
+                if !newValue.isEmpty && onboardingViewModel.activitiesError != nil {
+                    onboardingViewModel.clearActivitiesError()
+                }
             }
             .onChange(of: onboardingViewModel.onboardingComplete) { _, complete in
                 if complete {
@@ -154,12 +182,16 @@ struct Onboarding5: View {
             }
         }
     }
+    
+    // Simple check that doesn't trigger validation
+    private func canProceed() -> Bool {
+        return !selectedActivities.isEmpty
+    }
 }
 
-// Helper view for category buttons
+// Improved category button with better styling
 struct CategoryButton: View {
     let title: String
-    let width: CGFloat
     @Binding var selectedActivities: Set<String>
     
     var isSelected: Bool {
@@ -177,15 +209,20 @@ struct CategoryButton: View {
             Text(title)
                 .bold()
                 .font(.system(size: 15))
-                .frame(width: width, height: 30)
-                .background(isSelected ? Color(red: 4/255, green: 57/255, blue: 11/255) : Color.clear)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
                 .foregroundColor(isSelected ? Color(red: 255/255, green: 248/255, blue: 228/255) : Color(red: 4/255, green: 57/255, blue: 11/255))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 30)
-                        .stroke(Color(red: 4/255, green: 57/255, blue: 11/255), lineWidth: 1)
-                        .shadow(color: .black.opacity(0.5), radius: 2, x: -2, y: 4)
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(isSelected ? Color(red: 4/255, green: 57/255, blue: 11/255) : Color.clear)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20)
+                                .stroke(Color(red: 4/255, green: 57/255, blue: 11/255), lineWidth: 1.5)
+                        )
                 )
+                .shadow(color: .black.opacity(0.2), radius: 2, x: 0, y: 2)
         }
+        .buttonStyle(PlainButtonStyle())
     }
 }
 

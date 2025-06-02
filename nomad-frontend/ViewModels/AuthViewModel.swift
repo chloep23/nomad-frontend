@@ -191,12 +191,15 @@ class AuthViewModel: ObservableObject {
     }
     
     func googleAuth(idToken: String) {
+        print("🔍 AuthViewModel.googleAuth called with token: \(String(idToken.prefix(50)))...")
         isLoading = true
         errorMessage = nil
         
         Task {
             do {
+                print("🔍 Calling APIService.shared.googleAuth...")
                 let response = try await APIService.shared.googleAuth(idToken: idToken)
+                print("🔍 Google auth successful, got response: \(response)")
                 
                 // Save token and userId
                 _ = TokenManager.shared.saveToken(response.token)
@@ -206,12 +209,14 @@ class AuthViewModel: ObservableObject {
                 
                 self.isLoading = false
                 self.isAuthenticated = true
+                print("🔍 Set isAuthenticated = true")
                 
                 // For Google users, check if they need onboarding
                 // Since Google auth might return existing users, verify onboarding status
                 await verifyOnboardingStatusFromServer()
                 
             } catch let error as APIError {
+                print("🔍 Google auth failed with APIError: \(error)")
                 self.isLoading = false
                 
                 switch error {
@@ -223,6 +228,7 @@ class AuthViewModel: ObservableObject {
                     self.errorMessage = "Something went wrong with Google sign-in. Please try again."
                 }
             } catch {
+                print("🔍 Google auth failed with error: \(error)")
                 self.isLoading = false
                 self.errorMessage = "An unexpected error occurred during Google sign-in"
             }
@@ -230,12 +236,15 @@ class AuthViewModel: ObservableObject {
     }
     
     func appleAuth(result: AppleSignInResult) {
+        print("🍎 AuthViewModel.appleAuth called with result: \(result)")
         isLoading = true
         errorMessage = nil
         
         Task {
             do {
+                print("🍎 Calling APIService.shared.appleAuth...")
                 let response = try await APIService.shared.appleAuth(result: result)
+                print("🍎 Apple auth successful, got response: \(response)")
                 
                 // Save token and userId
                 _ = TokenManager.shared.saveToken(response.token)
@@ -245,12 +254,14 @@ class AuthViewModel: ObservableObject {
                 
                 self.isLoading = false
                 self.isAuthenticated = true
+                print("🍎 Set isAuthenticated = true")
                 
                 // For Apple users, check if they need onboarding
                 // Since Apple auth might return existing users, verify onboarding status
                 await verifyOnboardingStatusFromServer()
                 
             } catch let error as APIError {
+                print("🍎 Apple auth failed with APIError: \(error)")
                 self.isLoading = false
                 
                 switch error {
@@ -262,6 +273,7 @@ class AuthViewModel: ObservableObject {
                     self.errorMessage = "Something went wrong with Apple sign-in. Please try again."
                 }
             } catch {
+                print("🍎 Apple auth failed with error: \(error)")
                 self.isLoading = false
                 self.errorMessage = "An unexpected error occurred during Apple sign-in"
             }

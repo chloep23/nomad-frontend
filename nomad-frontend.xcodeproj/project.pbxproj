@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E025D7B42DE572A1009CC40A /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = E025D7B32DE572A1009CC40A /* GoogleSignIn */; };
+		E025D7B62DE572A1009CC40A /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E025D7B52DE572A1009CC40A /* GoogleSignInSwift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		1598C8DE2D54673F008556B1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -65,6 +70,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E025D7B42DE572A1009CC40A /* GoogleSignIn in Frameworks */,
+				E025D7B62DE572A1009CC40A /* GoogleSignInSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,6 +132,8 @@
 			);
 			name = "nomad-frontend";
 			packageProductDependencies = (
+				E025D7B32DE572A1009CC40A /* GoogleSignIn */,
+				E025D7B52DE572A1009CC40A /* GoogleSignInSwift */,
 			);
 			productName = "nomad-frontend";
 			productReference = 1598C8CA2D54673D008556B1 /* nomad-frontend.app */;
@@ -620,6 +629,19 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E025D7B32DE572A1009CC40A /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E025D7AE2DE2B3D2009CC40A /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		E025D7B52DE572A1009CC40A /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E025D7AE2DE2B3D2009CC40A /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1598C8C22D54673D008556B1 /* Project object */;
 }

@@ -12,10 +12,26 @@ struct LoginPage: View {
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var navigateToCreateAccount = false
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading) {
+                HStack {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "arrow.left")
+                            .resizable()
+                            .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
+                            .frame(width: 20, height: 16)
+                    }
+                    .padding(.leading, 30)
+                    .padding(.top, 20)
+                    
+                    Spacer()
+                }
+                
                 Image("compass")
                     .resizable()
                     .scaledToFit()
@@ -97,28 +113,65 @@ struct LoginPage: View {
                     .offset(x:190, y:-140)
                 
                 HStack{
-                    ZStack {
-                        Circle()
-                            .fill(Color(red: 4/255, green: 57/255, blue: 11/255))
-                            .padding(-4)
-                            .frame(width: 50, height: 50)
-                        Image("google")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 25, height: 25)
+                    // Google Sign-In Button
+                    Button(action: {
+                        print("🔍 Google Sign-In button tapped")
+                        Task {
+                            do {
+                                print("🔍 Starting Google Sign-In...")
+                                let idToken = try await GoogleSignInManager.shared.signIn()
+                                print("🔍 Google Sign-In successful, got token: \(String(idToken.prefix(50)))...")
+                                print("🔍 Calling authViewModel.googleAuth...")
+                                await authViewModel.googleAuth(idToken: idToken)
+                            } catch {
+                                print("🔍 Google Sign-In failed: \(error)")
+                                authViewModel.errorMessage = "Google sign-in failed: \(error.localizedDescription)"
+                            }
+                        }
+                    }) {
+                        ZStack {
+                            Circle()
+                                .fill(Color(red: 4/255, green: 57/255, blue: 11/255))
+                                .padding(-4)
+                                .frame(width: 50, height: 50)
+                            Image("google")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 25, height: 25)
+                        }
                     }
-                    .offset(x:140, y:-130)
-                    ZStack {
-                        Circle()
-                            .fill(Color(red: 4/255, green: 57/255, blue: 11/255))
-                            .padding(-4)
-                            .frame(width: 50, height: 50)
-                        Image("apple")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 38, height: 38)
+                    .disabled(authViewModel.isLoading)
+                    .offset(x:110, y:-130)
+                    
+                    // Apple Sign-In Button
+                    Button(action: {
+                        print("🍎 Apple Sign-In button tapped")
+                        Task {
+                            do {
+                                print("🍎 Starting Apple Sign-In...")
+                                let result = try await AppleSignInManager.shared.signIn()
+                                print("🍎 Apple Sign-In successful, got result: \(result)")
+                                print("🍎 Calling authViewModel.appleAuth...")
+                                authViewModel.appleAuth(result: result)
+                            } catch {
+                                print("🍎 Apple Sign-In failed: \(error)")
+                                authViewModel.errorMessage = "Apple sign-in failed: \(error.localizedDescription)"
+                            }
+                        }
+                    }) {
+                        ZStack {
+                            Circle()
+                                .fill(Color(red: 4/255, green: 57/255, blue: 11/255))
+                                .padding(-4)
+                                .frame(width: 50, height: 50)
+                            Image("apple")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 38, height: 38)
+                        }
                     }
-                    .offset(x:155, y:-130)
+                    .disabled(authViewModel.isLoading)
+                    .offset(x:180, y:-130)
                 }
                 
                 HStack {
@@ -132,7 +185,7 @@ struct LoginPage: View {
                     }
                 }
                 .font(.system(size: 21))
-                .offset(x: 50, y:-10)
+                .offset(x: 50, y:-90)
             }
             .offset(y:40)
             .frame(maxWidth: .infinity, maxHeight: .infinity)

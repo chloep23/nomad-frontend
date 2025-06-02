@@ -20,6 +20,21 @@ struct CreateAccountEmail: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading) {
+                HStack {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "arrow.left")
+                            .resizable()
+                            .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
+                            .frame(width: 20, height: 16)
+                    }
+                    .padding(.leading, 30)
+                    .padding(.top, 20)
+                    
+                    Spacer()
+                }
+                
                 Image("compass")
                     .resizable()
                     .scaledToFit()
@@ -131,19 +146,6 @@ struct CreateAccountEmail: View {
                 .offset(x: 45, y: !password.isEmpty ? -100 : -120)
                 .shadow(color: .black.opacity(0.3), radius: 2, x: 3, y: 5)
                 .disabled(authViewModel.isLoading)
-                
-                HStack {
-                    Text("Already have an account?")
-                        .foregroundColor(.black.opacity(0.45))
-                    
-                    NavigationLink(destination: LoginPage().environmentObject(authViewModel)) {
-                        Text("Login")
-                            .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
-                            .bold()
-                    }
-                }
-                .font(.system(size: 21))
-                .offset(x: 70, y: !password.isEmpty ? -80 : -100)
             }
             .offset(y:40)
             .frame(maxWidth: .infinity, maxHeight: .infinity)

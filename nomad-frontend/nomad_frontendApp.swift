@@ -6,34 +6,40 @@
 //
 
 import SwiftUI
+import GoogleSignIn
 
 struct ContentView: View {
+    @EnvironmentObject var authViewModel: AuthViewModel
+    
     var body: some View {
-        OnboardingFlow()
+        Group {
+            if authViewModel.isAuthenticated {
+                if authViewModel.hasCompletedOnboarding {
+                    MainTabView()
+                } else {
+                    OnboardingFlow()
+                }
+            } else {
+                LoginPage()
+            }
+        }
     }
 }
 
 @main
 struct nomad_frontendApp: App {
-    @StateObject var authViewModel = AuthViewModel()
+    @StateObject private var authViewModel = AuthViewModel()
+    @StateObject private var onboardingViewModel = OnboardingViewModel()
     
     var body: some Scene {
         WindowGroup {
-            Group {
-                if !authViewModel.isAuthenticated {
-                    // Show login or create account
-                    LoginPage()
-                        .environmentObject(authViewModel)
-                } else if !authViewModel.hasCompletedOnboarding {
-                    // Show onboarding flow
-                    OnboardingFlow()
-                        .environmentObject(authViewModel)
-                } else {
-                    // Show main app
-                    MainTabView()
-                        .environmentObject(authViewModel)
+            ContentView()
+                .environmentObject(authViewModel)
+                .environmentObject(onboardingViewModel)
+                .onOpenURL { url in
+                    print("📱 App received URL: \(url)")
+                    GIDSignIn.sharedInstance.handle(url)
                 }
-            }
         }
     }
 }

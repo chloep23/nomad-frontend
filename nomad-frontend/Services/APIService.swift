@@ -75,7 +75,16 @@ class APIService {
             "nonce": result.nonce
         ]
         
-        let data = try await sendRequest(to: endpoint, method: "POST", body: body)
+        // 🐛 DEBUG: Print the request details
+        print("🍎 DEBUG: Apple Auth Request Details:")
+        print("🍎 DEBUG: Endpoint: \(endpoint)")
+        print("🍎 DEBUG: Request body keys: \(body.keys)")
+        print("🍎 DEBUG: Identity token length: \(result.identityToken.count)")
+        print("🍎 DEBUG: Auth code length: \(result.authorizationCode.count)")
+        print("🍎 DEBUG: Email: \(result.email ?? "nil")")
+        print("🍎 DEBUG: Nonce: \(result.nonce)")
+        
+        let data = try await sendRequestWithDebug(to: endpoint, method: "POST", body: body)
         
         do {
             let decoder = JSONDecoder()
@@ -193,6 +202,72 @@ class APIService {
         } catch let error as APIError {
             throw error
         } catch {
+            throw APIError.networkError(error)
+        }
+    }
+    
+    // Enhanced debugging version of sendRequest
+    private func sendRequestWithDebug(to endpoint: String, method: String, body: [String: Any]? = nil) async throws -> Data {
+        guard let url = URL(string: endpoint) else {
+            throw APIError.invalidURL
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = method
+        
+        // Add auth token if available
+        if let token = TokenManager.shared.getToken() {
+            request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        
+        // Add body if provided
+        if let body = body {
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        }
+        
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw APIError.invalidResponse
+            }
+            
+            // 🐛 DEBUG: Print response details
+            print("🍎 DEBUG: Response Status Code: \(httpResponse.statusCode)")
+            print("🍎 DEBUG: Response Headers: \(httpResponse.allHeaderFields)")
+            
+            // Always try to parse the response body for debugging
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("🍎 DEBUG: Raw Response Body: \(responseString)")
+            }
+            
+            switch httpResponse.statusCode {
+            case 200...299:
+                return data
+            case 401:
+                throw APIError.unauthorized
+            default:
+                // Try to extract detailed error message from response
+                if let errorJson = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                    print("🍎 DEBUG: Error JSON: \(errorJson)")
+                    
+                    // Look for diagnostic information
+                    if let diagnostic = errorJson["diagnostic"] as? [String: Any] {
+                        print("🍎 DEBUG: Diagnostic Info: \(diagnostic)")
+                    }
+                    
+                    if let errorMessage = errorJson["error"] as? String {
+                        throw APIError.serverError(errorMessage)
+                    }
+                }
+                
+                throw APIError.serverError("Server error: \(httpResponse.statusCode)")
+            }
+        } catch let error as APIError {
+            throw error
+        } catch {
+            print("🍎 DEBUG: Network error: \(error)")
             throw APIError.networkError(error)
         }
     }

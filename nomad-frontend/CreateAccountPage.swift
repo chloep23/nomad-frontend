@@ -11,56 +11,51 @@ struct CreateAccountPage: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @State private var email: String = ""
     @State private var password: String = ""
-    @State private var isLoading = false
+    @State private var isAppleLoading = false
+    @State private var isGoogleLoading = false
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading) {
-                HStack{
-                    Image(systemName: "arrow.left")
-                        .resizable()
-                        .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
-                        .frame(width: 30, height: 23)
-                        .offset(x:24, y:-250)
-                    
-                    Image("compass")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 370, height: 370)
-                        .rotationEffect(.degrees(-35))
-                        .offset(x: 118, y: -180)
-                }
+                
+                
+                Image("compass")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 370, height: 370)
+                    .rotationEffect(.degrees(-35))
+                    .offset(x: 175, y: -150)
                 
                 Text("Create Account")
-                    .offset(x: 26, y: -270)
+                    .offset(x: 26, y: -240)
                     .font(.system(size: 40))
                     .bold()
                     .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
                 Text("Let's get started")
-                    .offset(x: 32, y: -256)
+                    .offset(x: 32, y: -226)
                     .font(.system(size: 20))
                     .bold()
                     .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
+                    
                 
-                VStack{
+                VStack(spacing: 20) {
                     Button(action: {
                         signInWithApple()
                     }) {
-                        HStack{
-                            if authViewModel.isLoading || isLoading {
+                        HStack {
+                            if authViewModel.isLoading || isAppleLoading {
                                 ProgressView()
                                     .progressViewStyle(CircularProgressViewStyle(tint: Color(red: 255/255, green: 248/255, blue: 228/255)))
                                     .scaleEffect(0.8)
-                                    .offset(x:-36)
                                 Text("Signing up...")
-                                    .offset(x:-16)
+                                    .padding(.leading, 8)
                             } else {
                                 Image("apple")
                                     .resizable()
-                                    .frame(width:30, height:30)
-                                    .offset(x:-36)
+                                    .frame(width: 30, height: 30)
                                 Text("Sign up with Apple")
-                                    .offset(x:-16)
+                                    .padding(.leading, 8)
                             }
                         }
                         .bold()
@@ -69,29 +64,26 @@ struct CreateAccountPage: View {
                         .frame(width: 290, height: 40)
                         .background(Color(red: 4/255, green: 57/255, blue: 11/255))
                         .cornerRadius(30)
-                        .offset(x: 33, y: -230)
                         .shadow(color: .black.opacity(0.3), radius: 2, x: 3, y: 5)
                     }
-                    .disabled(authViewModel.isLoading || isLoading)
+                    .disabled(authViewModel.isLoading || isAppleLoading || isGoogleLoading)
                     
                     Button(action: {
                         signInWithGoogle()
                     }) {
-                        HStack{
-                            if authViewModel.isLoading || isLoading {
+                        HStack {
+                            if authViewModel.isLoading || isGoogleLoading {
                                 ProgressView()
                                     .progressViewStyle(CircularProgressViewStyle(tint: Color(red: 255/255, green: 248/255, blue: 228/255)))
                                     .scaleEffect(0.8)
-                                    .offset(x:-36)
                                 Text("Signing up...")
-                                    .offset(x:-16)
+                                    .padding(.leading, 8)
                             } else {
                                 Image("google")
                                     .resizable()
-                                    .frame(width:22, height:22)
-                                    .offset(x:-30)
+                                    .frame(width: 22, height: 22)
                                 Text("Sign up with Google")
-                                    .offset(x:-8)
+                                    .padding(.leading, 8)
                             }
                         }
                         .bold()
@@ -100,15 +92,14 @@ struct CreateAccountPage: View {
                         .frame(width: 290, height: 40)
                         .background(Color(red: 4/255, green: 57/255, blue: 11/255))
                         .cornerRadius(30)
-                        .offset(x: 33, y: -215)
                         .shadow(color: .black.opacity(0.3), radius: 2, x: 3, y: 5)
                     }
-                    .disabled(authViewModel.isLoading || isLoading)
+                    .disabled(authViewModel.isLoading || isAppleLoading || isGoogleLoading)
                     
                     Text("Or")
                         .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
                         .bold()
-                        .offset(x:35, y:-200)
+                        .padding(.top, 5)
                     
                     NavigationLink(destination: CreateAccountEmail().environmentObject(authViewModel)) {
                         Text("I'll use email instead")
@@ -123,8 +114,8 @@ struct CreateAccountPage: View {
                                     .shadow(color: .black.opacity(0.5), radius: 2, x: -2, y: 4)
                             )
                     }
-                    .offset(x: 33, y: -190)
                 }
+                .offset(x: 33, y: -190)
                 
                 if let errorMessage = authViewModel.errorMessage {
                     Text(errorMessage)
@@ -134,6 +125,20 @@ struct CreateAccountPage: View {
                         .padding(.horizontal, 40)
                         .offset(y: -180)
                 }
+                
+                // Add "Already have an account?" option
+                HStack {
+                    Text("Already have an account?")
+                        .foregroundColor(.black.opacity(0.45))
+                    
+                    NavigationLink(destination: LoginPage().environmentObject(authViewModel)) {
+                        Text("Login")
+                            .foregroundColor(Color(red: 4/255, green: 57/255, blue: 11/255))
+                            .bold()
+                    }
+                }
+                .font(.system(size: 18))
+                .offset(x: 50, y: -160)
             }
             .offset(x:22, y:40)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -143,18 +148,23 @@ struct CreateAccountPage: View {
     }
     
     private func signInWithGoogle() {
-        isLoading = true
+        print("🔍 Google Sign-In button tapped on CreateAccountPage")
+        isGoogleLoading = true
         
         Task {
             do {
+                print("🔍 Starting Google Sign-In...")
                 let idToken = try await GoogleSignInManager.shared.signIn()
+                print("🔍 Google Sign-In successful, got token: \(String(idToken.prefix(50)))...")
+                print("🔍 Calling authViewModel.googleAuth...")
+                await authViewModel.googleAuth(idToken: idToken)
                 await MainActor.run {
-                    authViewModel.googleAuth(idToken: idToken)
-                    isLoading = false
+                    isGoogleLoading = false
                 }
             } catch {
+                print("🔍 Google Sign-In failed: \(error)")
                 await MainActor.run {
-                    isLoading = false
+                    isGoogleLoading = false
                     authViewModel.errorMessage = "Google sign-in failed: \(error.localizedDescription)"
                 }
             }
@@ -162,18 +172,23 @@ struct CreateAccountPage: View {
     }
     
     private func signInWithApple() {
-        isLoading = true
+        print("🍎 Apple Sign-In button tapped on CreateAccountPage")
+        isAppleLoading = true
         
         Task {
             do {
+                print("🍎 Starting Apple Sign-In...")
                 let result = try await AppleSignInManager.shared.signIn()
+                print("🍎 Apple Sign-In successful, got result: \(result)")
+                print("🍎 Calling authViewModel.appleAuth...")
+                authViewModel.appleAuth(result: result)
                 await MainActor.run {
-                    authViewModel.appleAuth(result: result)
-                    isLoading = false
+                    isAppleLoading = false
                 }
             } catch {
+                print("🍎 Apple Sign-In failed: \(error)")
                 await MainActor.run {
-                    isLoading = false
+                    isAppleLoading = false
                     authViewModel.errorMessage = "Apple sign-in failed: \(error.localizedDescription)"
                 }
             }
